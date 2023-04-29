@@ -130,10 +130,10 @@ def main_account_screen():
     main_screen.title("Account Login")
     main_screen.resizable(width=False, height=False)
     Label(text="Select Your Choice", fg="white", bg="#252d35", width="300", height="2", font=("Comic Sans MS", 13, BOLD)).pack()
-    login_frame = LabelFrame(main_screen, bd=2, relief="groove", bg="light yellow")
+    login_frame = LabelFrame(main_screen, bd=2, relief="groove")
     login_frame.pack()
-    image_logo = xuly_image("https://ik.imagekit.io/nhom2/Cover.png?updatedAt=1682768752412", 850, 690)
-    img1 = tk.Label(login_frame, image=image_logo)
+    image_cover = xuly_image("https://ik.imagekit.io/nhom2/Cover.png?updatedAt=1682768752412", 850, 640)
+    img1 = tk.Label(login_frame, image=image_cover)
     img1.pack(side="top", fill=BOTH)
 
     Button(login_frame, text="Login", height="2", width="30", command=login).place(x=320, y=250)
@@ -170,9 +170,9 @@ class Mainmenu(Frame):
     def __init__(self, master):
         super().__init__(master)
         self.products_frame = LabelFrame(self.master, bd=3, relief="groove", text="Products", font="arial 16 bold", fg="dark blue", labelanchor=N)
-        self.heading = LabelFrame(self.master, bd=3, relief="groove")
-        self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844", 100, 40)
         self.button_frame = LabelFrame(self.master, bd=3, relief="groove", text="Menu", font="arial 16 bold", fg="dark blue", labelanchor=N)
+        self.heading = LabelFrame(self.master, bd=3, relief="groove", bg="#080a0d")
+        self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo.png?updatedAt=1682769745947", 100, 40)
         self.entry_page_var = StringVar()
         self.lf = []
         self.button_add = []
@@ -191,8 +191,7 @@ class Mainmenu(Frame):
 
         Label(self.heading, image=self.image_logo).grid(row=0, column=0, padx=10, pady=5)
 
-        Label(self.heading, text="Tech-verse", font="arial 20 bold", fg="blue").grid(row=0, column=1, pady=5)
-        Label(self.heading, text="Empowering Your Tech Lifestyle", font=("Comic Sans MS", 16, BOLD), fg="blue").grid(row=0, column=2, padx=315, pady=5)
+        Label(self.heading, text="Empowering Your Tech Lifestyle", font=("Comic Sans MS", 16, BOLD), fg="white", bg="#080a0d").grid(row=0, column=2, padx=400, pady=5)
         Button(self.heading, text="Payment", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC", bg="#765341", relief=SOLID, command=self.payment).grid(row=0, column=3, padx=10, pady=5)
 
         self.button_frame.place(x=1, y=60, width=130, height=730)
