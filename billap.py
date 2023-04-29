@@ -5,9 +5,8 @@ import random
 class Bill_App:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1300x700+0+0")
-        self.root.maxsize(width=1280, height=715)
-        self.root.minsize(width=1280, height=715)
+        self.root.geometry("1300x730")
+        self.root.resizable(width=False, height=False)
         self.root.title("Billing System - TECH HUB SHOP")
         self.cus_name = StringVar()
         self.c_phone = StringVar()
