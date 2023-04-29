@@ -8,7 +8,7 @@ class Bill_App:
         self.root.geometry("1300x700+0+0")
         self.root.maxsize(width=1280, height=715)
         self.root.minsize(width=1280, height=715)
-        self.root.title("Billing System - MÈO PÉO RURU")
+        self.root.title("Billing System - TECH HUB SHOP")
         self.cus_name = StringVar()
         self.c_phone = StringVar()
         # For Generating Random Bill Numbers
@@ -44,7 +44,7 @@ class Bill_App:
         fg_color = "white"
         lbl_color = 'black'
         # Title of App
-        title = Label(self.root, text="Billing System - FAT CAT RURU", bd=12, relief=GROOVE, fg="Black", bg=bg_color,
+        title = Label(self.root, text="Billing System - TECH HUB SHOP", bd=12, relief=GROOVE, fg="Black", bg=bg_color,
                       font=("times new roman", 25, "bold"), pady=3).pack(fill=X)
 
         # ==========Customers Frame==========#
@@ -262,7 +262,7 @@ class Bill_App:
                 (self.codeF005.get() * 770000)
         )
         self.total_face.set(str(self.total_face_prices) + " VND")
-        self.tax_face.set(str(round(self.total_face_prices * 0.05)) + " VND")  # thuế 5% có nhiều không ạ ?
+        self.tax_face.set(str(round(self.total_face_prices * 0.05)) + " VND")
         # ====================Total BODY Prices
         self.total_body_prices = (
                 (self.codeB001.get() * 235000) +
@@ -288,7 +288,7 @@ class Bill_App:
     # Function For Text Area
     def welcome_soft(self):
         self.txt.delete('1.0', END)
-        self.txt.insert(END, "     Welcome To FAT CAT RURU \n")
+        self.txt.insert(END, "     Welcome To TECH HUB SHOP \n")
         self.txt.insert(END, f"\nBill No. : {str(self.c_bill_no.get())}")
         self.txt.insert(END, f"\nCustomer Name : {str(self.cus_name.get())}")
         self.txt.insert(END, f"\nPhone No. : {str(self.c_phone.get())}")
