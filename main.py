@@ -4,7 +4,7 @@ from tkinter import *
 import os
 import tkinter as tk
 from tkinter import messagebox
-from billap import Bill_App
+# from billap import Bill_App
 
 
 def register():
@@ -184,10 +184,10 @@ class Mainmenu(Frame):
 
         Label(self.heading, image=self.image_logo).grid(row=0, column=0, padx=10, pady=5)
 
-        Label(self.heading, text="Empowering Your Tech Lifestyle", font=("Comic Sans MS", 16, BOLD), fg="white", bg="#080a0d").grid(row=0, column=2, padx=400, pady=5)
+        Label(self.heading, text="Empowering Your Tech Lifestyle", font=("Comic Sans MS", 16, BOLD), fg="white", bg="#080a0d").grid(row=0, column=2, padx=375, pady=5)
 
-        Button(self.heading, text="Payment", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=SOLID, activebackground="#252d35", activeforeground="#F6F5EC", command=self.payment).grid(row=0, column=3, padx=10, pady=5)
+        Button(self.heading, text="Shopping Cart", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=SOLID, activebackground="#252d35", activeforeground="#F6F5EC", command=self.show_cart).grid(row=0, column=3, padx=10, pady=5)
 
         self.button_frame.place(x=0, y=60, width=130, height=680)
         self.products_frame.place(x=130, y=60, width=1230, height=680)
@@ -219,15 +219,12 @@ class Mainmenu(Frame):
         Button(self.button_frame, text="Others", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
                bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
-        Button(self.button_frame, text="Show Cart", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=self.show_cart).grid(row=9, column=0, padx=10)
-
-    def payment(self):
-        self.cart_list = []
-        self.show_cart()
-        messagebox.showinfo("Payment", "Thank you for shopping with us")
-        self.master.destroy()
-        Bill_App()
+    # def payment(self):
+    #     self.cart_list = []
+    #     self.show_cart()
+    #     messagebox.showinfo("Payment", "Thank you for shopping with us")
+    #     self.master.destroy()
+    #     Bill_App()
 
     def buy_product(self, product):
         self.cart_list.append(product)
