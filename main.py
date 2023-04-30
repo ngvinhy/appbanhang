@@ -4,7 +4,7 @@ from tkinter import *
 import os
 import tkinter as tk
 from tkinter import messagebox
-# from billap import Bill_App
+from billap import Bill_App
 
 
 def register():
@@ -127,12 +127,16 @@ def main_account_screen():
     img1 = tk.Label(login_frame, image=image_cover)
     img1.pack(side="top", fill=BOTH)
 
-    Button(login_frame, text="Login", height="2", width="15", command=login, font=("Comic Sans MS", 10, BOLD)).place(
-        x=360, y=265)
-    Button(login_frame, text="Register", height="2", width="15", command=register,
-           font=("Comic Sans MS", 10, BOLD)).place(x=360, y=320)
+    Button(login_frame, text="Login", height="2", width="15", command=login, font=("Comic Sans MS", 10, BOLD)).place(x=360, y=265)
+    Button(login_frame, text="Register", height="2", width="15", command=register, font=("Comic Sans MS", 10, BOLD)).place(x=360, y=320)
+    Button(login_frame, text="Admin", height="2", width="15", command=admin, font=("Comic Sans MS", 10, BOLD)).place(x=360, y=375)
 
     main_screen.mainloop()
+
+
+def admin():
+    main_screen.destroy()
+    Bill_App()
 
 
 class Product:
@@ -219,12 +223,6 @@ class Mainmenu(Frame):
         Button(self.button_frame, text="Others", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
                bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
-    # def payment(self):
-    #     self.cart_list = []
-    #     self.show_cart()
-    #     messagebox.showinfo("Payment", "Thank you for shopping with us")
-    #     self.master.destroy()
-    #     Bill_App()
 
     def buy_product(self, product):
         self.cart_list.append(product)
@@ -250,7 +248,8 @@ class Mainmenu(Frame):
                 Label(lf, text=self.products[i][1], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
                 Label(lf, text=self.products[i][3], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
 
-                self.button_add.append(Button(lf, command=lambda idx=count: self.buy_product(self.products[idx]), text="Add to Cart", font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID))
+                self.button_add.append(Button(lf, command=lambda idx=count: self.buy_product(self.products[idx]), text="Add to Cart",
+                                              font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID))
                 self.button_add[count].grid(row=4, column=0, padx=60, pady=5)
 
                 count += 1
