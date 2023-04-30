@@ -83,23 +83,14 @@ def login_verify():
         file1 = open(username1, "r")
         verify = file1.read().splitlines()
         if password1 in verify:
+            login_screen.destroy()
             messagebox.showinfo("Account", "Login Success")
-            delete_login_success()
-            # login_sucess()
+            main_screen.destroy()
+            main()
         else:
             password_not_recognised()
     else:
         user_not_found()
-
-
-# def login_sucess():
-#     global login_success_screen
-#     login_success_screen = Toplevel(login_screen)
-#     login_success_screen.title("Success")
-#     login_success_screen.geometry("150x100")
-#     login_success_screen.resizable(width=False, height=False)
-#     Label(login_success_screen, text="Login Success").pack()
-#     Button(login_success_screen, text="OK", command=delete_login_success).pack()
 
 
 def password_not_recognised():
@@ -253,7 +244,7 @@ class Mainmenu(Frame):
         for i in range(len(self.products)):
             if self.products[i][4] == phanloai:
                 lf = LabelFrame(self.products_frame, bd=1, relief="solid", fg="white", bg="#252d35", text=self.products[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-                lf.grid(row=count // 4, column=count % 4, padx=10, pady=10)
+                lf.grid(row=count//4, column=count % 4, padx=10, pady=10)
 
                 self.image_products.append(xuly_image(self.products[i][2], 70, 50))
                 label_image = Label(lf, image=self.image_products[count])
@@ -273,7 +264,7 @@ class Mainmenu(Frame):
         self.HideAllFrame()
         for i in range(len(self.cart_list)):
             lf = LabelFrame(self.products_frame, bd=2, relief="solid", fg="white", bg="#252d35", text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-            lf.grid(row=i // 4, column=i % 4, padx=10, pady=5)
+            lf.grid(row=i//4, column=i % 4, padx=10, pady=5)
             self.lf1.append(lf)  # Append the label frame to the list
 
             self.image_products.append(xuly_image(self.cart_list[i][2], 70, 50))
@@ -286,16 +277,11 @@ class Mainmenu(Frame):
             Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font=("Comic Sans MS", 12, BOLD), fg="white", bg="red").grid(row=4, column=0, padx=60, pady=5)
 
     def remove_item(self, idx):
-        if -1 <= idx < len(self.cart_list):
+        if 0 <= idx < len(self.cart_list):
             self.lf1[idx].destroy()
             del self.lf1[idx]  # Remove the label frame from the list
             self.cart_list.pop(idx)
-
-
-def delete_login_success():
-    # login_success_screen.destroy()
-    main_screen.destroy()
-    main()
+        self.show_cart()  # Re-create the cart view
 
 
 def delete_password_not_recognised():
