@@ -223,7 +223,6 @@ class Mainmenu(Frame):
         Button(self.button_frame, text="Others", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
                bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
-
     def buy_product(self, product):
         self.cart_list.append(product)
 
