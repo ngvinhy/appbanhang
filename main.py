@@ -129,7 +129,7 @@ def main_account_screen():
 
     Button(login_frame, text="Login", height="2", width="15", command=login, font=("Comic Sans MS", 10, BOLD)).place(x=360, y=265)
     Button(login_frame, text="Register", height="2", width="15", command=register, font=("Comic Sans MS", 10, BOLD)).place(x=360, y=320)
-    Button(login_frame, text="Admin", height="2", width="15", command=admin, font=("Comic Sans MS", 10, BOLD)).place(x=360, y=375)
+    Button(login_frame, text="Admin", height="1", width="7", command=admin, font=("Comic Sans MS", 10, BOLD)).place(x=775, y=10)
 
     main_screen.mainloop()
 
