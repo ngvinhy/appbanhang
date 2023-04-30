@@ -83,21 +83,23 @@ def login_verify():
         file1 = open(username1, "r")
         verify = file1.read().splitlines()
         if password1 in verify:
-            login_sucess()
+            messagebox.showinfo("Account", "Login Success")
+            delete_login_success()
+            # login_sucess()
         else:
             password_not_recognised()
     else:
         user_not_found()
 
 
-def login_sucess():
-    global login_success_screen
-    login_success_screen = Toplevel(login_screen)
-    login_success_screen.title("Success")
-    login_success_screen.geometry("150x100")
-    login_success_screen.resizable(width=False, height=False)
-    Label(login_success_screen, text="Login Success").pack()
-    Button(login_success_screen, text="OK", command=delete_login_success).pack()
+# def login_sucess():
+#     global login_success_screen
+#     login_success_screen = Toplevel(login_screen)
+#     login_success_screen.title("Success")
+#     login_success_screen.geometry("150x100")
+#     login_success_screen.resizable(width=False, height=False)
+#     Label(login_success_screen, text="Login Success").pack()
+#     Button(login_success_screen, text="OK", command=delete_login_success).pack()
 
 
 def password_not_recognised():
@@ -250,18 +252,18 @@ class Mainmenu(Frame):
         count = 0
         for i in range(len(self.products)):
             if self.products[i][4] == phanloai:
-                lf = LabelFrame(self.products_frame, bd=2, relief="groove", text=self.products[i][0])
-                lf.grid(row=count // 4, column=count % 4, padx=10, pady=1)
+                lf = LabelFrame(self.products_frame, bd=1, relief="solid", fg="white", bg="#252d35", text=self.products[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+                lf.grid(row=count // 4, column=count % 4, padx=10, pady=10)
 
                 self.image_products.append(xuly_image(self.products[i][2], 70, 50))
                 label_image = Label(lf, image=self.image_products[count])
-                label_image.grid(row=2, column=0, padx=10)
+                label_image.grid(row=2, column=0, padx=60, pady=5)
 
-                Label(lf, text=self.products[i][1], font=("Comic Sans MS", 12, "bold"), fg="blue").grid(row=1, column=0, padx=10)
-                Label(lf, text=self.products[i][3], font=("Comic Sans MS", 12, "bold"), fg="blue").grid(row=3, column=0, padx=10)
+                Label(lf, text=self.products[i][1], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
+                Label(lf, text=self.products[i][3], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
 
-                self.button_add.append(Button(lf, command=lambda idx=count: self.buy_product(self.products[idx]), text="Add to Cart", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC", bg="#765341", relief=SOLID))
-                self.button_add[count].grid(row=4, column=0, padx=10)
+                self.button_add.append(Button(lf, command=lambda idx=count: self.buy_product(self.products[idx]), text="Add to Cart", font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID))
+                self.button_add[count].grid(row=4, column=0, padx=60, pady=5)
 
                 count += 1
             else:
@@ -270,17 +272,19 @@ class Mainmenu(Frame):
     def show_cart(self):
         self.HideAllFrame()
         for i in range(len(self.cart_list)):
-            lf = LabelFrame(self.products_frame, bd=2, relief="groove")
-            lf.grid(row=i // 4, column=i % 4, padx=10, pady=1)
+            lf = LabelFrame(self.products_frame, bd=2, relief="solid", fg="white", bg="#252d35", text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+            lf.grid(row=i // 4, column=i % 4, padx=10, pady=5)
             self.lf1.append(lf)  # Append the label frame to the list
 
-            Label(lf, text=self.cart_list[i][1], font="arial 12 bold", fg="blue").grid(row=1, column=0, padx=10)
+            Label(lf, text=self.cart_list[i][1], font=("Comic Sans MS", 12, BOLD), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
+
             self.image_products.append(xuly_image(self.cart_list[i][2], 70, 50))
             label_image = Label(lf, image=self.image_products[i])
             label_image.grid(row=2, column=0, padx=10)
-            Label(lf, text=self.cart_list[i][3], font="arial 12 bold", fg="blue").grid(row=3, column=0, padx=10)
-            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font="arial 12 bold",
-                   fg="blue", bg="light green").grid(row=4, column=0, padx=10)
+
+            Label(lf, text=self.cart_list[i][3], font=("Comic Sans MS", 12, BOLD), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
+
+            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font=("Comic Sans MS", 12, BOLD), fg="white", bg="red").grid(row=4, column=0, padx=60, pady=5)
 
     def remove_item(self, idx):
         if -1 <= idx < len(self.cart_list):
@@ -290,7 +294,7 @@ class Mainmenu(Frame):
 
 
 def delete_login_success():
-    login_success_screen.destroy()
+    # login_success_screen.destroy()
     main_screen.destroy()
     main()
 
