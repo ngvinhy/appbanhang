@@ -276,12 +276,11 @@ class Mainmenu(Frame):
             lf.grid(row=i // 4, column=i % 4, padx=10, pady=5)
             self.lf1.append(lf)  # Append the label frame to the list
 
-            Label(lf, text=self.cart_list[i][1], font=("Comic Sans MS", 12, BOLD), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
-
             self.image_products.append(xuly_image(self.cart_list[i][2], 70, 50))
             label_image = Label(lf, image=self.image_products[i])
             label_image.grid(row=2, column=0, padx=10)
 
+            Label(lf, text=self.cart_list[i][1], font=("Comic Sans MS", 12, BOLD), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
             Label(lf, text=self.cart_list[i][3], font=("Comic Sans MS", 12, BOLD), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
 
             Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font=("Comic Sans MS", 12, BOLD), fg="white", bg="red").grid(row=4, column=0, padx=60, pady=5)
