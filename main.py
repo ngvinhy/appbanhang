@@ -98,28 +98,28 @@ def login_verify():
 def password_not_recognised():
     global password_not_recog_screen
     password_not_recog_screen = Toplevel(login_screen)
-    password_not_recog_screen.title("Success")
+    password_not_recog_screen.title("Account")
     password_not_recog_screen.geometry("150x100")
     password_not_recog_screen.resizable(width=False, height=False)
     Label(password_not_recog_screen, text="Invalid Password ").pack()
-    Button(password_not_recog_screen, text="OK", command=delete_password_not_recognised).pack()
+    Button(password_not_recog_screen, text="OK", command=password_not_recog_screen.destroy).pack()
 
 
 def user_not_found():
     global user_not_found_screen
     user_not_found_screen = Toplevel(login_screen)
-    user_not_found_screen.title("Success")
+    user_not_found_screen.title("Account")
     user_not_found_screen.geometry("150x100")
     user_not_found_screen.resizable(width=False, height=False)
     Label(user_not_found_screen, text="User Not Found").pack()
-    Button(user_not_found_screen, text="OK", command=delete_user_not_found_screen).pack()
+    Button(user_not_found_screen, text="OK", command=user_not_found_screen.destroy).pack()
 
 
 def main_account_screen():
     global main_screen
     main_screen = Tk()
     main_screen.geometry("850x690")
-    main_screen.title("Account Login")
+    main_screen.title("TECH HUB SHOP")
     main_screen.resizable(width=False, height=False)
     Label(text="Select Your Choice", fg="white", bg="#252d35", width="300", height="1",
           font=("Comic Sans MS", 13, BOLD)).pack()
@@ -250,7 +250,7 @@ class Mainmenu(Frame):
                 Label(lf, text=product[1], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
 
                 button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Add to Cart",
-                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID)
+                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID, activebackground="green", activeforeground="white")
                 button_add.grid(row=4, column=0, padx=60, pady=5)
                 self.button_add.append(button_add)
                 count += 1
@@ -259,13 +259,31 @@ class Mainmenu(Frame):
 
     def show_cart(self):
         self.HideAllFrame()
+
+        # Tạo khung Canvas để chứa các sản phẩm
+        canvas = Canvas(self.products_frame, bg="#252d35")
+        canvas.pack(side=LEFT, fill=BOTH, expand=True)
+
+        # Tạo thanh cuộn dọc
+        scrollbar = Scrollbar(self.products_frame, orient=VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        # Thiết lập khung Canvas để sử dụng thanh cuộn
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        # Tạo khung con trong Canvas để chứa sản phẩm
+        frame = Frame(canvas, bg="#252d35")
+        canvas.create_window((0, 0), window=frame, anchor="nw")
+
         self.image_products = []  # Xóa list hình ảnh sản phẩm
         self.lf1 = []  # Xóa list label frames
         count = 0  # Khởi tạo biến đếm để định vị vị trí
 
         for i in range(len(self.cart_list)):
-            lf = LabelFrame(self.products_frame, bd=2, relief="solid", fg="white", bg="#252d35", text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-            lf.grid(row=count//4, column=count % 4, padx=10, pady=5)
+            lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35",
+                            text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+            lf.grid(row=count // 4, column=count % 4, padx=10, pady=5)
             self.lf1.append(lf)  # Thêm label frame vào list
             product_name = self.cart_list[i][5]
             product_image = self.cart_list[i][2]
@@ -276,8 +294,12 @@ class Mainmenu(Frame):
             Label(lf, text=product_name, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
             Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
             Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove",
-                   font=("Comic Sans MS", 12, "bold"), fg="white", bg="red").grid(row=4, column=0, padx=60, pady=5)
+                   font=("Comic Sans MS", 12, "bold"), fg="white", bg="red", activebackground="red", activeforeground="white").grid(row=4, column=0, padx=60, pady=5)
             count += 1  # Tăng biến đếm
+
+        # Cập nhật thanh cuộn khi có thay đổi
+        canvas.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
 
         self.total_label = Label(self.products_frame, text="Total: 0 VNĐ", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC", bg="#252d35")
         self.total_label.place(x=5, y=605)
@@ -285,7 +307,10 @@ class Mainmenu(Frame):
 
         payment_button = Button(self.products_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                 bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC", command=self.show_order)
-        payment_button.place(x=1140, y=600)
+        payment_button.place(x=1120, y=600)
+        # Kết nối thanh cuộn với khung Canvas
+        canvas.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=canvas.yview)
 
     def remove_item(self, idx):
         if 0 <= idx < len(self.cart_list):
@@ -329,22 +354,22 @@ class Mainmenu(Frame):
             bill_window = Toplevel(self.master)
             bill_window.title("Order")
             # Add label for "Payment Receipt"
-            receipt_label = Label(bill_window, text="Order Confirmation", font=("Times New Roman", 16, "bold"))
+            receipt_label = Label(bill_window, text="Order Confirmation", font=("Comic Sans MS", 15, BOLD))
             receipt_label.grid(row=0, column=0, columnspan=5, padx=10, pady=5)
             # Add label for "Tech Hub"
-            title_label = Label(bill_window, text="Products of Tech Hub Shop", font=("Times New Roman", 16, "bold"))
+            title_label = Label(bill_window, text="Products of Tech Hub Shop", font=("Comic Sans MS", 13, BOLD))
             title_label.grid(row=1, column=0, columnspan=5, padx=10, pady=3)
             # Add label for current date and time
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
-            time_label = Label(bill_window, text=current_time, font=("Times New Roman", 12))
+            time_label = Label(bill_window, text=current_time, font=("Comic Sans MS", 12, BOLD))
             time_label.grid(row=2, column=0, columnspan=5, padx=10, pady=5)
             # Add dashed line separator
-            line_label = Label(bill_window, text="-" * 80, font=("Times New Roman", 12, "bold"))
+            line_label = Label(bill_window, text="-" * 80, font=("Comic Sans MS", 12, BOLD))
             line_label.grid(row=3, column=0, columnspan=5, padx=10, pady=5)
             # Create the table headers
             headers = ["Code", "Product", "Quantity", "Price", "Total"]
             for col, header in enumerate(headers):
-                header_label = Label(bill_window, text=header, font=("Times New Roman", 14, "bold"))
+                header_label = Label(bill_window, text=header, font=("Comic Sans MS", 12, BOLD))
                 header_label.grid(row=4, column=col, padx=10, pady=5)
             # Create the bill details
             row = 5  # Initialize the row variable
@@ -374,52 +399,46 @@ class Mainmenu(Frame):
                         total_labels[existing_index].configure(text="{:,} VNĐ".format(total_price))
                     else:
                         # If the code doesn't exist, add new labels
-                        code_label = Label(bill_window, text=product_code, font=("Times New Roman", 12))
+                        code_label = Label(bill_window, text=product_code, font=("Comic Sans MS", 12, BOLD))
                         code_label.grid(row=row, column=0, padx=10, pady=5)
                         code_labels.append(code_label)
 
-                        name_label = Label(bill_window, text=product_name, font=("Times New Roman", 12))
+                        name_label = Label(bill_window, text=product_name, font=("Comic Sans MS", 12, BOLD))
                         name_label.grid(row=row, column=1, padx=10, pady=5)
                         name_labels.append(name_label)
 
-                        quantity_label = Label(bill_window, text="1", font=("Times New Roman", 12))
+                        quantity_label = Label(bill_window, text="1", font=("Comic Sans MS", 12, BOLD))
                         quantity_label.grid(row=row, column=2, padx=10, pady=5)
                         quantity_labels.append(quantity_label)
 
-                        price_label = Label(bill_window, text=product_price, font=("Times New Roman", 12))
+                        price_label = Label(bill_window, text=product_price, font=("Comic Sans MS", 12, BOLD))
                         price_label.grid(row=row, column=3, padx=10, pady=5)
                         price_labels.append(price_label)
                         # Process the product price and calculate the total
                         product_price = product_price.replace(",", "").replace("VND", "").replace(".", "").strip()
                         total_price = int(product_price) * 1
                         total_amount += total_price
-                        total_label = Label(bill_window, text="{:,} VNĐ".format(total_price), font=("Times New Roman", 12))
+                        total_label = Label(bill_window, text="{:,} VNĐ".format(total_price), font=("Comic Sans MS", 12, BOLD))
                         total_label.grid(row=row, column=4, padx=10, pady=5)
                         total_labels.append(total_label)
                         row += 1  # Increment the row variable
             # Add dashed line separator
-            line_label = Label(bill_window, text="-" * 80, font=("Times New Roman", 12, "bold"))
+            line_label = Label(bill_window, text="-" * 80, font=("Comic Sans MS", 12, BOLD))
             line_label.grid(row=row, column=0, columnspan=5, padx=10, pady=5)
             # Display the total amount
             row += 1  # Increment the row variable
-            total_label = Label(bill_window, text="Total Amount: {:,} VNĐ".format(self.tong()), font=("Times New Roman", 14, "bold"))
+            total_label = Label(bill_window, text="Total Amount: {:,} VNĐ".format(self.tong()), font=("Comic Sans MS", 12, BOLD))
             total_label.grid(row=row, column=0, columnspan=2, padx=10, pady=10)
             # Add Confirm button
-            confirm_button = Button(bill_window, text="Confirm", font=("Times New Roman", 12), command=self.show_bill)
-            confirm_button.grid(row=row, column=3, sticky=E, padx=5, pady=5)
+            confirm_button = Button(bill_window, text="Confirm", font=("Comic Sans MS", 12, BOLD), relief=SOLID, activeforeground="white",
+                                    activebackground="green", command=self.show_bill)
+            confirm_button.grid(row=row, column=4, sticky=E, padx=80, pady=5)
             # Add Cancel button
-            cancel_button = Button(bill_window, text="Cancel", font=("Times New Roman", 12), command=bill_window.destroy)
+            cancel_button = Button(bill_window, text="Cancel", font=("Comic Sans MS", 12, BOLD), relief=SOLID, activeforeground="white",
+                                   activebackground="red", command=bill_window.destroy)
             cancel_button.grid(row=row, column=4, sticky=E, padx=5, pady=5)
         else:
             messagebox.showinfo("Cart", "There are no products in the cart")
-
-
-def delete_password_not_recognised():
-    password_not_recog_screen.destroy()
-
-
-def delete_user_not_found_screen():
-    user_not_found_screen.destroy()
 
 
 def main():
