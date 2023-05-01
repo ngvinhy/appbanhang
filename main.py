@@ -260,12 +260,20 @@ class Mainmenu(Frame):
     def show_cart(self):
         self.HideAllFrame()
 
+        # Tạo frame chứa sản phẩm
+        products_frame = Frame(self.products_frame, bg="#252d35")
+        products_frame.pack(side=TOP, fill=BOTH, expand=True)
+
+        # Tạo frame chứa tổng và nút thanh toán
+        total_frame = Frame(self.products_frame, bg="#252d35", bd=2, relief="raised")
+        total_frame.pack(side=BOTTOM, fill=X)
+
         # Tạo khung Canvas để chứa các sản phẩm
-        canvas = Canvas(self.products_frame, bg="#252d35")
+        canvas = Canvas(products_frame, bg="#252d35")
         canvas.pack(side=LEFT, fill=BOTH, expand=True)
 
         # Tạo thanh cuộn dọc
-        scrollbar = Scrollbar(self.products_frame, orient=VERTICAL, command=canvas.yview)
+        scrollbar = Scrollbar(products_frame, orient=VERTICAL, command=canvas.yview)
         scrollbar.pack(side=RIGHT, fill=Y)
 
         # Thiết lập khung Canvas để sử dụng thanh cuộn
@@ -293,21 +301,23 @@ class Mainmenu(Frame):
             label_image.grid(row=2, column=0, padx=10)
             Label(lf, text=product_name, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
             Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
-            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove",
-                   font=("Comic Sans MS", 12, "bold"), fg="white", bg="red", activebackground="red", activeforeground="white").grid(row=4, column=0, padx=60, pady=5)
+            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font = ("Comic Sans MS", 12, "bold"), fg="white", bg="red", activebackground = "red", activeforeground = "white").grid(row=4, column=0, padx=60, pady=5)
             count += 1  # Tăng biến đếm
 
         # Cập nhật thanh cuộn khi có thay đổi
         canvas.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
 
-        self.total_label = Label(self.products_frame, text="Total: 0 VNĐ", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC", bg="#252d35")
-        self.total_label.place(x=5, y=605)
+        self.total_label = Label(total_frame, text="Total: 0 VNĐ", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
+                                 bg="#252d35")
+        self.total_label.pack(side=LEFT, padx=10, pady=5)
         self.total_label.config(text="Total: {:,} VNĐ".format(self.tong()).replace(".0", "").replace(",", "."))
 
-        payment_button = Button(self.products_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
-                                bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC", command=self.show_order)
-        payment_button.place(x=1120, y=600)
+        payment_button = Button(total_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
+                                bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
+                                command=self.show_order)
+        payment_button.pack(side=RIGHT, padx=10, pady=5)
+
         # Kết nối thanh cuộn với khung Canvas
         canvas.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=canvas.yview)
@@ -360,7 +370,7 @@ class Mainmenu(Frame):
             title_label = Label(bill_window, text="Products of Tech Hub Shop", font=("Comic Sans MS", 13, BOLD))
             title_label.grid(row=1, column=0, columnspan=5, padx=10, pady=3)
             # Add label for current date and time
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+            current_time = datetime.now().strftime("%d-%m-%Y %H:%M")
             time_label = Label(bill_window, text=current_time, font=("Comic Sans MS", 12, BOLD))
             time_label.grid(row=2, column=0, columnspan=5, padx=10, pady=5)
             # Add dashed line separator
@@ -396,7 +406,7 @@ class Mainmenu(Frame):
                         new_quantity = existing_quantity + 1
                         quantity_labels[existing_index].configure(text=str(new_quantity))
                         total_price = int(product_price.replace(",", "").replace("VND", "").replace(".", "").strip()) * new_quantity
-                        total_labels[existing_index].configure(text="{:,} VND".format(total_price))
+                        total_labels[existing_index].configure(text="{:,} VND".format(total_price).replace(",", "."))
                     else:
                         # If the code doesn't exist, add new labels
                         code_label = Label(bill_window, text=product_code, font=("Comic Sans MS", 12, BOLD))
