@@ -6,6 +6,7 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 from billap import Bill_App
+from collections import Counter
 
 
 def register():
@@ -235,22 +236,23 @@ class Mainmenu(Frame):
         self.image_products = []
         self.button_add = []  # Khởi tạo danh sách mới cho button_add
         count = 0
-        for i in range(len(self.products)):
-            if self.products[i][4] == phanloai:
-                lf = LabelFrame(self.products_frame, bd=1, relief="solid", fg="white", bg="#252d35", text=self.products[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-                lf.grid(row=count//4, column=count % 4, padx=10, pady=10)
+        for product in self.products:
+            if product[4] == phanloai:
+                lf = LabelFrame(self.products_frame, bd=1, relief="solid", fg="white", bg="#252d35", text=product[0],
+                                font=("Comic Sans MS", 12, "bold"), labelanchor=N)
+                lf.grid(row=count // 4, column=count % 4, padx=10, pady=10)
 
-                self.image_products.append(xuly_image(self.products[i][2], 70, 50))
+                self.image_products.append(xuly_image(product[2], 70, 50))
                 label_image = Label(lf, image=self.image_products[count])
                 label_image.grid(row=2, column=0, padx=60, pady=5)
 
-                Label(lf, text=self.products[i][1], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
-                Label(lf, text=self.products[i][3], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
+                Label(lf, text=product[3], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
+                Label(lf, text=product[1], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
 
-                self.button_add.append(Button(lf, command=lambda idx=count: self.buy_product(self.products[idx]), text="Add to Cart",
-                                              font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID))
-                self.button_add[count].grid(row=4, column=0, padx=60, pady=5)
-
+                button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Add to Cart",
+                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID)
+                button_add.grid(row=4, column=0, padx=60, pady=5)
+                self.button_add.append(button_add)
                 count += 1
             else:
                 continue
@@ -262,10 +264,10 @@ class Mainmenu(Frame):
         count = 0  # Khởi tạo biến đếm để định vị vị trí
 
         for i in range(len(self.cart_list)):
-            lf = LabelFrame(self.products_frame, bd=2, relief="solid", fg="white", bg="#252d35", text=self.cart_list[i][5], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+            lf = LabelFrame(self.products_frame, bd=2, relief="solid", fg="white", bg="#252d35", text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
             lf.grid(row=count//4, column=count % 4, padx=10, pady=5)
             self.lf1.append(lf)  # Thêm label frame vào list
-            product_name = self.cart_list[i][0]
+            product_name = self.cart_list[i][5]
             product_image = self.cart_list[i][2]
             product_price = self.cart_list[i][1]
             self.image_products.append(xuly_image(product_image, 70, 50))
@@ -296,26 +298,29 @@ class Mainmenu(Frame):
         return sum([float(product[1].replace(' VND', '').replace('.', '')) for product in self.cart_list])
 
     def show_bill(self):
-        product_quantity = {}
+        product_counts = Counter(product[0] for product in self.cart_list)
         receipt = f"{'-' * 50}\n{'PAYMENT RECEIPT':^50}\n{'Time: '}{datetime.now():%d-%m-%Y %H:%M:%S}\n{'-' * 50}"
         total_amount = 0  # Initialize the total amount variable
 
-        for product in self.cart_list:
-            product_id = product[0]
+        unique_product_ids = set(product[0] for product in self.cart_list)  # Get unique product IDs
+
+        row = 0
+        for product_id in unique_product_ids:
             product_details = next((p for p in self.products if p[0] == product_id), None)
             if product_details:
                 product_code = product_details[5]
                 product_name = product_details[0]
                 product_price = product_details[1]
-                quantity = product_quantity.get(product_code, 0) + 1
-                product_quantity[product_code] = quantity
+                quantity = product_counts[product_id]
                 total_price = int(product_price.replace(",", "").replace("VND", "").replace(".", "")) * quantity
                 total_amount += total_price  # Update the total amount
                 receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
+                row += 1
+
         receipt += "\nTotal: {:,} VND".format(total_amount).replace(",", ".")
-        bill_window.destroy()
-        self.cart_list.clear()
         messagebox.showinfo("Order Confirmed", receipt)
+        self.cart_list.clear()
+        bill_window.destroy()
         self.show_cart()
 
     def show_order(self):
@@ -323,36 +328,33 @@ class Mainmenu(Frame):
             global bill_window
             bill_window = Toplevel(self.master)
             bill_window.title("Order")
-
             # Add label for "Payment Receipt"
-            receipt_label = Label(bill_window, text="Phiếu thanh toán ", font=("Times New Roman", 16, "bold"))
-            receipt_label.grid(row=0, column=0, columnspan=4, padx=10, pady=5)
-
+            receipt_label = Label(bill_window, text="Order Confirmation", font=("Times New Roman", 16, "bold"))
+            receipt_label.grid(row=0, column=0, columnspan=5, padx=10, pady=5)
             # Add label for "Tech Hub"
-            title_label = Label(bill_window, text="Tech Hub", font=("Times New Roman", 16, "bold"))
-            title_label.grid(row=1, column=0, columnspan=4, padx=10, pady=3)
-
+            title_label = Label(bill_window, text="Products of Tech Hub Shop", font=("Times New Roman", 16, "bold"))
+            title_label.grid(row=1, column=0, columnspan=5, padx=10, pady=3)
             # Add label for current date and time
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
             time_label = Label(bill_window, text=current_time, font=("Times New Roman", 12))
-            time_label.grid(row=2, column=0, columnspan=4, padx=10, pady=5)
-
+            time_label.grid(row=2, column=0, columnspan=5, padx=10, pady=5)
             # Add dashed line separator
             line_label = Label(bill_window, text="-" * 80, font=("Times New Roman", 12, "bold"))
             line_label.grid(row=3, column=0, columnspan=5, padx=10, pady=5)
-
             # Create the table headers
             headers = ["Code", "Product", "Quantity", "Price", "Total"]
             for col, header in enumerate(headers):
                 header_label = Label(bill_window, text=header, font=("Times New Roman", 14, "bold"))
                 header_label.grid(row=4, column=col, padx=10, pady=5)
-
-            # Create a dictionary to store the quantity of each product
-            product_quantity = {}
-
             # Create the bill details
             row = 5  # Initialize the row variable
             total_amount = 0  # Initialize the total amount variable
+            # Create lists to store the labels
+            code_labels = []
+            name_labels = []
+            quantity_labels = []
+            price_labels = []
+            total_labels = []
             for product in self.cart_list:
                 product_id = product[0]
                 product_details = next((p for p in self.products if p[0] == product_id), None)
@@ -360,46 +362,54 @@ class Mainmenu(Frame):
                     product_code = product_details[5]
                     product_name = product_details[0]
                     product_price = product_details[1]
-                    quantity = product_quantity.get(product_code, 0) + 1
-                    product_quantity[product_code] = quantity
+                    # Check if the code already exists in the labels
+                    existing_index = next((i for i, code in enumerate(code_labels) if code['text'] == product_code), None)
 
-                    code_label = Label(bill_window, text=product_code, font=("Times New Roman", 12))
-                    code_label.grid(row=row, column=0, padx=10, pady=5)
+                    if existing_index is not None:
+                        # If the code already exists, update the quantity and total
+                        existing_quantity = int(quantity_labels[existing_index]['text'])
+                        new_quantity = existing_quantity + 1
+                        quantity_labels[existing_index].configure(text=str(new_quantity))
+                        total_price = int(product_price.replace(",", "").replace("VND", "").replace(".", "").strip()) * new_quantity
+                        total_labels[existing_index].configure(text="{:,} VNĐ".format(total_price))
+                    else:
+                        # If the code doesn't exist, add new labels
+                        code_label = Label(bill_window, text=product_code, font=("Times New Roman", 12))
+                        code_label.grid(row=row, column=0, padx=10, pady=5)
+                        code_labels.append(code_label)
 
-                    name_label = Label(bill_window, text=product_name, font=("Times New Roman", 12))
-                    name_label.grid(row=row, column=1, padx=10, pady=5)
+                        name_label = Label(bill_window, text=product_name, font=("Times New Roman", 12))
+                        name_label.grid(row=row, column=1, padx=10, pady=5)
+                        name_labels.append(name_label)
 
-                    quantity_label = Label(bill_window, text=quantity, font=("Times New Roman", 12))
-                    quantity_label.grid(row=row, column=2, padx=10, pady=5)
+                        quantity_label = Label(bill_window, text="1", font=("Times New Roman", 12))
+                        quantity_label.grid(row=row, column=2, padx=10, pady=5)
+                        quantity_labels.append(quantity_label)
 
-                    price_label = Label(bill_window, text=product_price, font=("Times New Roman", 12))
-                    price_label.grid(row=row, column=3, padx=10, pady=5)
-
-                    # Handle decimal point and space character in product_price
-                    product_price = product_price.replace(",", "").replace("VND", "").replace(".", "").strip()
-                    total_price = int(product_price) * quantity
-                    total_amount += total_price  # Update the total amount
-                    total_label = Label(bill_window, text="{:,} VNĐ".format(total_price), font=("Times New Roman", 12))
-                    total_label.grid(row=row, column=4, padx=10, pady=5)
-
-                    row += 1  # Increment the row variable
-
+                        price_label = Label(bill_window, text=product_price, font=("Times New Roman", 12))
+                        price_label.grid(row=row, column=3, padx=10, pady=5)
+                        price_labels.append(price_label)
+                        # Process the product price and calculate the total
+                        product_price = product_price.replace(",", "").replace("VND", "").replace(".", "").strip()
+                        total_price = int(product_price) * 1
+                        total_amount += total_price
+                        total_label = Label(bill_window, text="{:,} VNĐ".format(total_price), font=("Times New Roman", 12))
+                        total_label.grid(row=row, column=4, padx=10, pady=5)
+                        total_labels.append(total_label)
+                        row += 1  # Increment the row variable
             # Add dashed line separator
             line_label = Label(bill_window, text="-" * 80, font=("Times New Roman", 12, "bold"))
             line_label.grid(row=row, column=0, columnspan=5, padx=10, pady=5)
-
             # Display the total amount
             row += 1  # Increment the row variable
-            total_label = Label(bill_window, text="Total Amount: {:,} VNĐ".format(self.tong()),
-                                font=("Times New Roman", 14, "bold"))
-            total_label.grid(row=row, column=0, columnspan=3, padx=10, pady=10)
+            total_label = Label(bill_window, text="Total Amount: {:,} VNĐ".format(self.tong()), font=("Times New Roman", 14, "bold"))
+            total_label.grid(row=row, column=0, columnspan=2, padx=10, pady=10)
             # Add Confirm button
             confirm_button = Button(bill_window, text="Confirm", font=("Times New Roman", 12), command=self.show_bill)
-            confirm_button.grid(row=row, column=2, sticky=E, padx=10, pady=5)
-
+            confirm_button.grid(row=row, column=3, sticky=E, padx=5, pady=5)
             # Add Cancel button
             cancel_button = Button(bill_window, text="Cancel", font=("Times New Roman", 12), command=bill_window.destroy)
-            cancel_button.grid(row=row, column=3, sticky=E, padx=10, pady=5)
+            cancel_button.grid(row=row, column=4, sticky=E, padx=5, pady=5)
         else:
             messagebox.showinfo("Cart", "There are no products in the cart")
 
