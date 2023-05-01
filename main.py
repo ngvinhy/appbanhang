@@ -313,9 +313,9 @@ class Mainmenu(Frame):
                 total_amount += total_price  # Update the total amount
                 receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
         receipt += "\nTotal: {:,} VND".format(total_amount).replace(",", ".")
-        messagebox.showinfo("Order Confirmed", receipt)
-        self.cart_list.clear()
         bill_window.destroy()
+        self.cart_list.clear()
+        messagebox.showinfo("Order Confirmed", receipt)
         self.show_cart()
 
     def show_order(self):
