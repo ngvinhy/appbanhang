@@ -283,7 +283,7 @@ class Mainmenu(Frame):
         for i in range(len(self.cart_list)):
             lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35",
                             text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-            lf.grid(row=count // 4, column=count % 4, padx=10, pady=5)
+            lf.grid(row=count // 3, column=count % 3, padx=10, pady=5)
             self.lf1.append(lf)  # Thêm label frame vào list
             product_name = self.cart_list[i][5]
             product_image = self.cart_list[i][2]
