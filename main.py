@@ -7,13 +7,10 @@ import tkinter as tk
 from tkinter import messagebox
 from billap import Bill_App
 
+global bill_window, main_screen, register_screen, username, password, username_entry, password_entry, login_screen, username_verify, password_verify, username_login_entry, password_login_entry, password_not_recog_screen, user_not_found_screen
+
 
 def register():
-    global register_screen
-    global username
-    global password
-    global username_entry
-    global password_entry
     register_screen = Toplevel(main_screen)
     register_screen.title("Register")
     register_screen.geometry("300x250")
@@ -35,7 +32,6 @@ def register():
 
 
 def login():
-    global login_screen
     login_screen = Toplevel(main_screen)
     login_screen.title("Login")
     login_screen.geometry("300x250")
@@ -43,13 +39,9 @@ def login():
     Label(login_screen, text="Please enter details below to login").pack()
     Label(login_screen, text="").pack()
 
-    global username_verify
-    global password_verify
     username_verify = StringVar()
     password_verify = StringVar()
 
-    global username_login_entry
-    global password_login_entry
     Label(login_screen, text="Username").pack()
     username_login_entry = Entry(login_screen, textvariable=username_verify)
     username_login_entry.pack()
@@ -95,7 +87,6 @@ def login_verify():
 
 
 def password_not_recognised():
-    global password_not_recog_screen
     password_not_recog_screen = Toplevel(login_screen)
     password_not_recog_screen.title("Success")
     password_not_recog_screen.geometry("150x100")
@@ -105,7 +96,6 @@ def password_not_recognised():
 
 
 def user_not_found():
-    global user_not_found_screen
     user_not_found_screen = Toplevel(login_screen)
     user_not_found_screen.title("Success")
     user_not_found_screen.geometry("150x100")
@@ -115,7 +105,6 @@ def user_not_found():
 
 
 def main_account_screen():
-    global main_screen
     main_screen = Tk()
     main_screen.geometry("850x690")
     main_screen.title("Account Login")
@@ -320,7 +309,6 @@ class Mainmenu(Frame):
 
     def show_order(self):
         if len(self.cart_list) != 0:
-            global bill_window
             bill_window = Toplevel(self.master)
             bill_window.title("Order")
 
