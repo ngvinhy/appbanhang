@@ -1,3 +1,4 @@
+from datetime import *
 from tkinter.font import BOLD
 from xulyanh import *
 from tkinter import *
@@ -170,13 +171,12 @@ class Mainmenu(Frame):
         self.button_frame = LabelFrame(self.master, bd=3, relief="raised", text="CATEGORY", font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
         self.heading = LabelFrame(self.master, bd=3, relief="raised", bg="#080a0d")
         self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo.png?updatedAt=1682769745947", 100, 40)
-        self.entry_page_var = StringVar()
         self.lf = []
         self.button_add = []
         self.lf1 = []
         self.image_products = []
         self.pack()
-        self.master.geometry("1361x740")
+        self.master.geometry("1360x740")
         self.master.title("TECH HUB SHOP")
         self.master.resizable(width=False, height=False)
         self.products = Product.get_data()
@@ -257,26 +257,151 @@ class Mainmenu(Frame):
 
     def show_cart(self):
         self.HideAllFrame()
+        self.image_products = []  # Xóa list hình ảnh sản phẩm
+        self.lf1 = []  # Xóa list label frames
+        count = 0  # Khởi tạo biến đếm để định vị vị trí
+
         for i in range(len(self.cart_list)):
-            lf = LabelFrame(self.products_frame, bd=2, relief="solid", fg="white", bg="#252d35", text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-            lf.grid(row=i//4, column=i % 4, padx=10, pady=5)
-            self.lf1.append(lf)  # Append the label frame to the list
-
-            self.image_products.append(xuly_image(self.cart_list[i][2], 70, 50))
-            label_image = Label(lf, image=self.image_products[i])
+            lf = LabelFrame(self.products_frame, bd=2, relief="solid", fg="white", bg="#252d35", text=self.cart_list[i][5], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+            lf.grid(row=count//4, column=count % 4, padx=10, pady=5)
+            self.lf1.append(lf)  # Thêm label frame vào list
+            product_name = self.cart_list[i][0]
+            product_image = self.cart_list[i][2]
+            product_price = self.cart_list[i][1]
+            self.image_products.append(xuly_image(product_image, 70, 50))
+            label_image = Label(lf, image=self.image_products[count])
             label_image.grid(row=2, column=0, padx=10)
+            Label(lf, text=product_name, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
+            Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
+            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove",
+                   font=("Comic Sans MS", 12, "bold"), fg="white", bg="red").grid(row=4, column=0, padx=60, pady=5)
+            count += 1  # Tăng biến đếm
 
-            Label(lf, text=self.cart_list[i][1], font=("Comic Sans MS", 12, BOLD), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
-            Label(lf, text=self.cart_list[i][3], font=("Comic Sans MS", 12, BOLD), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
+        self.total_label = Label(self.products_frame, text="Total: 0 VNĐ", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC", bg="#252d35")
+        self.total_label.place(x=5, y=605)
+        self.total_label.config(text="Total: {:,} VNĐ".format(self.tong()).replace(".0", "").replace(",", "."))
 
-            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font=("Comic Sans MS", 12, BOLD), fg="white", bg="red").grid(row=4, column=0, padx=60, pady=5)
+        payment_button = Button(self.products_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
+                                bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC", command=self.show_order)
+        payment_button.place(x=1140, y=600)
 
     def remove_item(self, idx):
         if 0 <= idx < len(self.cart_list):
             self.lf1[idx].destroy()
-            del self.lf1[idx]  # Remove the label frame from the list
+            del self.lf1[idx]  # Xóa label frame khỏi list
             self.cart_list.pop(idx)
-        self.show_cart()  # Re-create the cart view
+        self.show_cart()  # Load lại giao diện cart
+
+    def tong(self):
+        return sum([float(product[1].replace(' VND', '').replace('.', '')) for product in self.cart_list])
+
+    def show_bill(self):
+        product_quantity = {}
+        receipt = f"{'-' * 50}\n{'PAYMENT RECEIPT':^50}\n{'Time: '}{datetime.now():%d-%m-%Y %H:%M:%S}\n{'-' * 50}"
+        total_amount = 0  # Initialize the total amount variable
+
+        for product in self.cart_list:
+            product_id = product[0]
+            product_details = next((p for p in self.products if p[0] == product_id), None)
+            if product_details:
+                product_code = product_details[5]
+                product_name = product_details[0]
+                product_price = product_details[1]
+                quantity = product_quantity.get(product_code, 0) + 1
+                product_quantity[product_code] = quantity
+                total_price = int(product_price.replace(",", "").replace("VND", "").replace(".", "")) * quantity
+                total_amount += total_price  # Update the total amount
+                receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
+        receipt += "\nTotal: {:,} VND".format(total_amount).replace(",", ".")
+        messagebox.showinfo("Order Confirmed", receipt)
+        self.cart_list.clear()
+        bill_window.destroy()
+        self.show_cart()
+
+    def show_order(self):
+        if len(self.cart_list) != 0:
+            global bill_window
+            bill_window = Toplevel(self.master)
+            bill_window.title("Order")
+
+            # Add label for "Payment Receipt"
+            receipt_label = Label(bill_window, text="Phiếu thanh toán ", font=("Times New Roman", 16, "bold"))
+            receipt_label.grid(row=0, column=0, columnspan=4, padx=10, pady=5)
+
+            # Add label for "Tech Hub"
+            title_label = Label(bill_window, text="Tech Hub", font=("Times New Roman", 16, "bold"))
+            title_label.grid(row=1, column=0, columnspan=4, padx=10, pady=3)
+
+            # Add label for current date and time
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+            time_label = Label(bill_window, text=current_time, font=("Times New Roman", 12))
+            time_label.grid(row=2, column=0, columnspan=4, padx=10, pady=5)
+
+            # Add dashed line separator
+            line_label = Label(bill_window, text="-" * 80, font=("Times New Roman", 12, "bold"))
+            line_label.grid(row=3, column=0, columnspan=5, padx=10, pady=5)
+
+            # Create the table headers
+            headers = ["Code", "Product", "Quantity", "Price", "Total"]
+            for col, header in enumerate(headers):
+                header_label = Label(bill_window, text=header, font=("Times New Roman", 14, "bold"))
+                header_label.grid(row=4, column=col, padx=10, pady=5)
+
+            # Create a dictionary to store the quantity of each product
+            product_quantity = {}
+
+            # Create the bill details
+            row = 5  # Initialize the row variable
+            total_amount = 0  # Initialize the total amount variable
+            for product in self.cart_list:
+                product_id = product[0]
+                product_details = next((p for p in self.products if p[0] == product_id), None)
+                if product_details:
+                    product_code = product_details[5]
+                    product_name = product_details[0]
+                    product_price = product_details[1]
+                    quantity = product_quantity.get(product_code, 0) + 1
+                    product_quantity[product_code] = quantity
+
+                    code_label = Label(bill_window, text=product_code, font=("Times New Roman", 12))
+                    code_label.grid(row=row, column=0, padx=10, pady=5)
+
+                    name_label = Label(bill_window, text=product_name, font=("Times New Roman", 12))
+                    name_label.grid(row=row, column=1, padx=10, pady=5)
+
+                    quantity_label = Label(bill_window, text=quantity, font=("Times New Roman", 12))
+                    quantity_label.grid(row=row, column=2, padx=10, pady=5)
+
+                    price_label = Label(bill_window, text=product_price, font=("Times New Roman", 12))
+                    price_label.grid(row=row, column=3, padx=10, pady=5)
+
+                    # Handle decimal point and space character in product_price
+                    product_price = product_price.replace(",", "").replace("VND", "").replace(".", "").strip()
+                    total_price = int(product_price) * quantity
+                    total_amount += total_price  # Update the total amount
+                    total_label = Label(bill_window, text="{:,} VNĐ".format(total_price), font=("Times New Roman", 12))
+                    total_label.grid(row=row, column=4, padx=10, pady=5)
+
+                    row += 1  # Increment the row variable
+
+            # Add dashed line separator
+            line_label = Label(bill_window, text="-" * 80, font=("Times New Roman", 12, "bold"))
+            line_label.grid(row=row, column=0, columnspan=5, padx=10, pady=5)
+
+            # Display the total amount
+            row += 1  # Increment the row variable
+            total_label = Label(bill_window, text="Total Amount: {:,} VNĐ".format(self.tong()),
+                                font=("Times New Roman", 14, "bold"))
+            total_label.grid(row=row, column=0, columnspan=3, padx=10, pady=10)
+            # Add Confirm button
+            confirm_button = Button(bill_window, text="Confirm", font=("Times New Roman", 12), command=self.show_bill)
+            confirm_button.grid(row=row, column=2, sticky=E, padx=10, pady=5)
+
+            # Add Cancel button
+            cancel_button = Button(bill_window, text="Cancel", font=("Times New Roman", 12), command=bill_window.destroy)
+            cancel_button.grid(row=row, column=3, sticky=E, padx=10, pady=5)
+        else:
+            messagebox.showinfo("Cart", "There are no products in the cart")
 
 
 def delete_password_not_recognised():

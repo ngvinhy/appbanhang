@@ -1,9 +1,9 @@
 Hada Labo Foaming Cleanser,180.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,180ml,face,F001
 Hada Labo Foaming Cleanser,180.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,160ml,Cleanser,F001
 Hada Labo Foaming Cleanser,180.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,160ml,Dried,F001
-Klairs Supple Preparation,~328.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,180ml,face,F003
-Klairs Supple Preparation,~328.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,180ml,Dried,F003
-Klairs Supple Preparation,~328.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,180ml,Toner,F003
+Klairs Supple Preparation,328.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,180ml,face,F003
+Klairs Supple Preparation,328.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,180ml,Dried,F003
+Klairs Supple Preparation,328.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,180ml,Toner,F003
 Water Bank Moisture Essence,770.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,70ml,face,F005
 Water Bank Moisture Essence,770.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,70ml,Serum,F005
 Water Bank Moisture Essence,770.000 VND,https://ik.imagekit.io/nhom2/Logo/techhub.png?updatedAt=1679738096844,70ml,Dried,F005
