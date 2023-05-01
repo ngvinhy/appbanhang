@@ -396,7 +396,7 @@ class Mainmenu(Frame):
                         new_quantity = existing_quantity + 1
                         quantity_labels[existing_index].configure(text=str(new_quantity))
                         total_price = int(product_price.replace(",", "").replace("VND", "").replace(".", "").strip()) * new_quantity
-                        total_labels[existing_index].configure(text="{:,} VNĐ".format(total_price))
+                        total_labels[existing_index].configure(text="{:,} VND".format(total_price))
                     else:
                         # If the code doesn't exist, add new labels
                         code_label = Label(bill_window, text=product_code, font=("Comic Sans MS", 12, BOLD))
@@ -418,7 +418,7 @@ class Mainmenu(Frame):
                         product_price = product_price.replace(",", "").replace("VND", "").replace(".", "").strip()
                         total_price = int(product_price) * 1
                         total_amount += total_price
-                        total_label = Label(bill_window, text="{:,} VNĐ".format(total_price), font=("Comic Sans MS", 12, BOLD))
+                        total_label = Label(bill_window, text="{:,} VND".format(total_price).replace(",", "."), font=("Comic Sans MS", 12, BOLD))
                         total_label.grid(row=row, column=4, padx=10, pady=5)
                         total_labels.append(total_label)
                         row += 1  # Increment the row variable
@@ -427,7 +427,7 @@ class Mainmenu(Frame):
             line_label.grid(row=row, column=0, columnspan=5, padx=10, pady=5)
             # Display the total amount
             row += 1  # Increment the row variable
-            total_label = Label(bill_window, text="Total Amount: {:,} VNĐ".format(self.tong()), font=("Comic Sans MS", 12, BOLD))
+            total_label = Label(bill_window, text="Total Amount: {:,} VND".format(self.tong()).replace(".0", "").replace(",", "."), font=("Comic Sans MS", 12, BOLD))
             total_label.grid(row=row, column=0, columnspan=2, padx=10, pady=10)
             # Add Confirm button
             confirm_button = Button(bill_window, text="Confirm", font=("Comic Sans MS", 12, BOLD), relief=SOLID, activeforeground="white",
