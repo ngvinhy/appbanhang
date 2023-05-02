@@ -301,7 +301,8 @@ class Mainmenu(Frame):
             label_image.grid(row=2, column=0, padx=10)
             Label(lf, text=product_name, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
             Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
-            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font = ("Comic Sans MS", 12, "bold"), fg="white", bg="red", activebackground = "red", activeforeground = "white").grid(row=4, column=0, padx=60, pady=5)
+            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font=("Comic Sans MS", 12, "bold"), fg="white", bg="red",
+                   activebackground="red", activeforeground="white").grid(row=4, column=0, padx=60, pady=5)
             count += 1  # Tăng biến đếm
 
         # Cập nhật thanh cuộn khi có thay đổi
