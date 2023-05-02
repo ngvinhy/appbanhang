@@ -1,3 +1,4 @@
+import csv
 from datetime import *
 from tkinter.font import BOLD
 from xulyanh import *
@@ -5,7 +6,6 @@ from tkinter import *
 import os
 import tkinter as tk
 from tkinter import messagebox
-from billap import Bill_App
 from collections import Counter
 
 
@@ -127,7 +127,7 @@ class MainAccountScreen:
 
     def admin(self):
         self.root.destroy()
-        Bill_App()
+        Admin()
 
 
 class Product:
@@ -141,24 +141,24 @@ class Product:
 
     @classmethod
     def get_data(cls):
-        file = open("Products.txt", "r", encoding="UTF-8")
-        data = file.readlines()
-        file.close()
-        data = [i.strip("\n") for i in data]
-        data = [i.split(",") for i in data]
+        with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
+            reader = csv.reader(file)
+            data = [row for row in reader]
         return data
 
     def append_data(self):
-        file = open("Products.txt", "a", encoding="UTF-8")
-        file.write("{},{},{},{},{}\n".format(self.name, self.price, self.image, self.description, self.type, self.code))
-        file.close()
+        with open("Products.csv", "a", newline="", encoding="UTF-8") as file:
+            writer = csv.writer(file)
+            writer.writerow([self.name, self.price, self.image, self.description, self.type, self.code])
 
 
 class Mainmenu(Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.products_frame = LabelFrame(self.master, bd=3, relief="raised", text="PRODUCTS", font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
-        self.button_frame = LabelFrame(self.master, bd=3, relief="raised", text="CATEGORY", font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
+        self.products_frame = LabelFrame(self.master, bd=3, relief="raised", text="PRODUCTS",
+                                         font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
+        self.button_frame = LabelFrame(self.master, bd=3, relief="raised", text="CATEGORY",
+                                       font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
         self.heading = LabelFrame(self.master, bd=3, relief="raised", bg="#080a0d")
         self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo.png?updatedAt=1682769745947", 100, 40)
         self.lf = []
@@ -166,7 +166,7 @@ class Mainmenu(Frame):
         self.lf1 = []
         self.image_products = []
         self.pack()
-        self.master.geometry("1360x740")
+        self.master.geometry("1180x740")
         self.master.title("TECH HUB SHOP")
         self.master.resizable(width=False, height=False)
         self.products = Product.get_data()
@@ -174,44 +174,55 @@ class Mainmenu(Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.heading.place(x=0, y=0, width=1360, height=60)
+        self.heading.place(x=0, y=0, width=1180, height=60)
 
         Label(self.heading, image=self.image_logo).grid(row=0, column=0, padx=10, pady=5)
 
-        Label(self.heading, text="Empowering Your Tech Lifestyle", font=("Comic Sans MS", 16, BOLD), fg="white", bg="#080a0d").grid(row=0, column=2, padx=375, pady=5)
+        Label(self.heading, text="Empowering Your Tech Lifestyle", font=("Comic Sans MS", 16, BOLD), fg="white",
+              bg="#080a0d").grid(row=0, column=2, padx=285, pady=5)
 
         Button(self.heading, text="Shopping Cart", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=SOLID, activebackground="#252d35", activeforeground="#F6F5EC", command=self.show_cart).grid(row=0, column=3, padx=10, pady=5)
+               bg="#252d35", relief=SOLID, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=self.show_cart).grid(row=0, column=3, padx=10, pady=5)
 
         self.button_frame.place(x=0, y=60, width=130, height=680)
-        self.products_frame.place(x=130, y=60, width=1230, height=680)
+        self.products_frame.place(x=130, y=60, width=1050, height=680)
 
         Button(self.button_frame, text="Laptop", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("face")).grid(row=0, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Laptop")).grid(row=0, column=0, padx=10)
 
         Button(self.button_frame, text="PC", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("body")).grid(row=1, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("PC")).grid(row=1, column=0, padx=10)
 
         Button(self.button_frame, text="Apple", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Cleanser")).grid(row=2, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Apple")).grid(row=2, column=0, padx=10)
 
         Button(self.button_frame, text="Screen", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Toner")).grid(row=3, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Screen")).grid(row=3, column=0, padx=10)
 
         Button(self.button_frame, text="Keyboard", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Serum")).grid(row=4, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Keyboard")).grid(row=4, column=0, padx=10)
 
         Button(self.button_frame, text="Mouse", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Whitening")).grid(row=5, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Mouse")).grid(row=5, column=0, padx=10)
 
         Button(self.button_frame, text="Headphones", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Lotion")).grid(row=6, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Headphones")).grid(row=6, column=0, padx=10)
 
         Button(self.button_frame, text="Accessories", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Exfoliate")).grid(row=7, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Accessories")).grid(row=7, column=0, padx=10)
 
         Button(self.button_frame, text="Others", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC", command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
     def buy_product(self, product):
         self.cart_list.append(product)
@@ -222,29 +233,57 @@ class Mainmenu(Frame):
 
     def ShowFrames(self, phanloai):
         self.HideAllFrame()
+
+        # Tạo khung Canvas để chứa các sản phẩm
+        canvas = Canvas(self.products_frame, bg="#252d35")
+        canvas.pack(side=LEFT, fill=BOTH, expand=True)
+
+        # Tạo thanh cuộn dọc
+        scrollbar = Scrollbar(self.products_frame, orient=VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        # Thiết lập khung Canvas để sử dụng thanh cuộn
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        # Tạo khung con trong Canvas để chứa sản phẩm
+        frame = Frame(canvas, bg="#252d35")
+        canvas.create_window((0, 0), window=frame, anchor="nw")
+
         self.image_products = []
         self.button_add = []  # Khởi tạo danh sách mới cho button_add
         count = 0
         for product in self.products:
-            if product[4] == phanloai:
-                lf = LabelFrame(self.products_frame, bd=1, relief="solid", fg="white", bg="#252d35", text=product[0],
+            if product[1] == phanloai:
+                lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35", text=product[3],
                                 font=("Comic Sans MS", 12, "bold"), labelanchor=N)
-                lf.grid(row=count // 4, column=count % 4, padx=10, pady=10)
+                lf.grid(row=count // 3, column=count % 3, padx=10, pady=10)
 
-                self.image_products.append(xuly_image(product[2], 70, 50))
+                self.image_products.append(xuly_image(product[5], 120, 100))
                 label_image = Label(lf, image=self.image_products[count])
-                label_image.grid(row=2, column=0, padx=60, pady=5)
+                label_image.grid(row=2, column=0, padx=85, pady=5)
 
-                Label(lf, text=product[3], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
-                Label(lf, text=product[1], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
+                Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1,
+                                                                                                              column=0,
+                                                                                                              padx=85,
+                                                                                                              pady=5)
+                Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3,
+                                                                                                              column=0,
+                                                                                                              padx=85,
+                                                                                                              pady=5)
 
                 button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Add to Cart",
-                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID, activebackground="green", activeforeground="white")
-                button_add.grid(row=4, column=0, padx=60, pady=5)
+                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
+                                    activebackground="green", activeforeground="white")
+                button_add.grid(row=4, column=0, padx=85, pady=5)
                 self.button_add.append(button_add)
                 count += 1
             else:
                 continue
+
+        # Cập nhật thanh cuộn khi có thay đổi
+        canvas.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
 
     def show_cart(self):
         self.HideAllFrame()
@@ -279,38 +318,37 @@ class Mainmenu(Frame):
 
         for i in range(len(self.cart_list)):
             lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35",
-                            text=self.cart_list[i][0], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+                            text=self.cart_list[i][3], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
             lf.grid(row=count // 3, column=count % 3, padx=10, pady=5)
             self.lf1.append(lf)  # Thêm label frame vào list
-            product_name = self.cart_list[i][5]
-            product_image = self.cart_list[i][2]
-            product_price = self.cart_list[i][1]
-            self.image_products.append(xuly_image(product_image, 70, 50))
+            product_name = self.cart_list[i][2]
+            product_image = self.cart_list[i][5]
+            product_price = self.cart_list[i][4]
+            self.image_products.append(xuly_image(product_image, 120, 100))
             label_image = Label(lf, image=self.image_products[count])
-            label_image.grid(row=2, column=0, padx=10)
-            Label(lf, text=product_name, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=60, pady=5)
-            Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=60, pady=5)
-            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove", font=("Comic Sans MS", 12, "bold"), fg="white", bg="red",
-                   activebackground="red", activeforeground="white").grid(row=4, column=0, padx=60, pady=5)
+            label_image.grid(row=2, column=0, padx=85, pady=5)
+            Label(lf, text=product_name, font=("Comic Sans MS", 12, "bold"), fg="white",
+                  bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
+            Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white",
+                  bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
+            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove",
+                   font=("Comic Sans MS", 12, "bold"), fg="white", bg="red",
+                   activebackground="red", activeforeground="white").grid(row=4, column=0, padx=85, pady=5)
             count += 1  # Tăng biến đếm
 
         # Cập nhật thanh cuộn khi có thay đổi
         canvas.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
 
-        self.total_label = Label(total_frame, text="Total: 0 VNĐ", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
+        self.total_label = Label(total_frame, text="Total: 0 ₫", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                  bg="#252d35")
         self.total_label.pack(side=LEFT, padx=10, pady=5)
-        self.total_label.config(text="Total: {:,} VNĐ".format(self.tong()).replace(".0", "").replace(",", "."))
+        self.total_label.config(text="Total: {:,} ₫".format(self.tong()).replace(".0", "").replace(",", "."))
 
         payment_button = Button(total_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                 bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
                                 command=self.show_order)
         payment_button.pack(side=RIGHT, padx=10, pady=5)
-
-        # Kết nối thanh cuộn với khung Canvas
-        canvas.config(yscrollcommand=scrollbar.set)
-        scrollbar.config(command=canvas.yview)
 
     def remove_item(self, idx):
         if 0 <= idx < len(self.cart_list):
@@ -320,7 +358,7 @@ class Mainmenu(Frame):
         self.show_cart()  # Load lại giao diện cart
 
     def tong(self):
-        return sum([float(product[1].replace(' VND', '').replace('.', '')) for product in self.cart_list])
+        return sum([float(product[4].replace(' ₫', '').replace('.', '')) for product in self.cart_list])
 
     def show_bill(self):
         product_counts = Counter(product[0] for product in self.cart_list)
@@ -333,16 +371,16 @@ class Mainmenu(Frame):
         for product_id in unique_product_ids:
             product_details = next((p for p in self.products if p[0] == product_id), None)
             if product_details:
-                product_code = product_details[5]
-                product_name = product_details[0]
-                product_price = product_details[1]
+                product_code = product_details[0]
+                product_name = product_details[2] + " " + product_details[3]
+                product_price = product_details[4]
                 quantity = product_counts[product_id]
-                total_price = int(product_price.replace(",", "").replace("VND", "").replace(".", "")) * quantity
+                total_price = int(product_price.replace(" ₫", "").replace(".", "")) * quantity
                 total_amount += total_price  # Update the total amount
                 receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
                 row += 1
 
-        receipt += "\nTotal: {:,} VND".format(total_amount).replace(",", ".")
+        receipt += "\nTotal: {:,} ₫".format(total_amount).replace(",", ".")
         messagebox.showinfo("Order Confirmed", receipt)
         self.cart_list.clear()
         self.bill_window.destroy()
@@ -383,9 +421,9 @@ class Mainmenu(Frame):
                 product_id = product[0]
                 product_details = next((p for p in self.products if p[0] == product_id), None)
                 if product_details:
-                    product_code = product_details[5]
-                    product_name = product_details[0]
-                    product_price = product_details[1]
+                    product_code = product_details[0]
+                    product_name = product_details[2] + " " + product_details[3]
+                    product_price = product_details[4]
                     # Check if the code already exists in the labels
                     existing_index = next((i for i, code in enumerate(code_labels) if code['text'] == product_code), None)
 
@@ -394,8 +432,8 @@ class Mainmenu(Frame):
                         existing_quantity = int(quantity_labels[existing_index]['text'])
                         new_quantity = existing_quantity + 1
                         quantity_labels[existing_index].configure(text=str(new_quantity))
-                        total_price = int(product_price.replace(",", "").replace("VND", "").replace(".", "").strip()) * new_quantity
-                        total_labels[existing_index].configure(text="{:,} VND".format(total_price).replace(",", "."))
+                        total_price = int(product_price.replace(" ₫", "").replace(".", "").strip()) * new_quantity
+                        total_labels[existing_index].configure(text="{:,} ₫".format(total_price).replace(",", "."))
                     else:
                         # If the code doesn't exist, add new labels
                         code_label = Label(self.bill_window, text=product_code, font=("Comic Sans MS", 12, BOLD))
@@ -414,10 +452,11 @@ class Mainmenu(Frame):
                         price_label.grid(row=row, column=3, padx=10, pady=5)
                         price_labels.append(price_label)
                         # Process the product price and calculate the total
-                        product_price = product_price.replace(",", "").replace("VND", "").replace(".", "").strip()
+                        product_price = product_price.replace(" ₫", "").replace(".", "").strip()
                         total_price = int(product_price) * 1
                         total_amount += total_price
-                        total_label = Label(self.bill_window, text="{:,} VND".format(total_price).replace(",", "."), font=("Comic Sans MS", 12, BOLD))
+                        total_label = Label(self.bill_window, text="{:,} ₫".format(total_price).replace(",", "."),
+                                            font=("Comic Sans MS", 12, BOLD))
                         total_label.grid(row=row, column=4, padx=10, pady=5)
                         total_labels.append(total_label)
                         row += 1  # Increment the row variable
@@ -426,18 +465,142 @@ class Mainmenu(Frame):
             line_label.grid(row=row, column=0, columnspan=5, padx=10, pady=5)
             # Display the total amount
             row += 1  # Increment the row variable
-            total_label = Label(self.bill_window, text="Total Amount: {:,} VND".format(self.tong()).replace(".0", "").replace(",", "."), font=("Comic Sans MS", 12, BOLD))
+            total_label = Label(self.bill_window, text="Total Amount: {:,} ₫".format(self.tong()).replace(".0", "").replace(",", "."),
+                                font=("Comic Sans MS", 12, BOLD))
             total_label.grid(row=row, column=0, columnspan=2, padx=10, pady=10)
             # Add Confirm button
-            confirm_button = Button(self.bill_window, text="Confirm", font=("Comic Sans MS", 12, BOLD), relief=SOLID, activeforeground="white",
-                                    activebackground="green", command=self.show_bill)
+            confirm_button = Button(self.bill_window, text="Confirm", font=("Comic Sans MS", 12, BOLD), relief=SOLID,
+                                    activeforeground="white", activebackground="green", command=self.show_bill)
             confirm_button.grid(row=row, column=4, sticky=E, padx=80, pady=5)
             # Add Cancel button
-            cancel_button = Button(self.bill_window, text="Cancel", font=("Comic Sans MS", 12, BOLD), relief=SOLID, activeforeground="white",
-                                   activebackground="red", command=self.bill_window.destroy)
+            cancel_button = Button(self.bill_window, text="Cancel", font=("Comic Sans MS", 12, BOLD), relief=SOLID,
+                                   activeforeground="white", activebackground="red", command=self.bill_window.destroy)
             cancel_button.grid(row=row, column=4, sticky=E, padx=5, pady=5)
         else:
             messagebox.showinfo("Cart", "There are no products in the cart")
+
+
+class Admin:
+    def __init__(self):
+        self.root = Tk()
+        self.products_frame = LabelFrame(self.root, bd=3, relief="raised", text="PRODUCTS",
+                                         font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
+        self.button_frame = LabelFrame(self.root, bd=3, relief="raised", text="CATEGORY",
+                                       font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
+        self.heading = LabelFrame(self.root, bd=3, relief="raised", bg="#080a0d")
+        self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo.png?updatedAt=1682769745947", 100, 40)
+        self.lf = []
+        self.lf1 = []
+        self.image_products = []
+        self.root.geometry("1180x740")
+        self.root.title("Products Management")
+        self.root.resizable(width=False, height=False)
+        self.products = Product.get_data()
+        self.create_widgets()
+
+        self.root.mainloop()
+
+    def create_widgets(self):
+        self.heading.place(x=0, y=0, width=1180, height=60)
+
+        Label(self.heading, image=self.image_logo).grid(row=0, column=0, padx=10, pady=5)
+
+        Label(self.heading, text="Products Management", font=("Comic Sans MS", 16, BOLD), fg="white",
+              bg="#080a0d").grid(row=0, column=2, padx=375, pady=5)
+
+        self.button_frame.place(x=0, y=60, width=130, height=680)
+        self.products_frame.place(x=130, y=60, width=1050, height=680)
+
+        Button(self.button_frame, text="Laptop", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Laptop")).grid(row=0, column=0, padx=10)
+
+        Button(self.button_frame, text="PC", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("PC")).grid(row=1, column=0, padx=10)
+
+        Button(self.button_frame, text="Apple", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Apple")).grid(row=2, column=0, padx=10)
+
+        Button(self.button_frame, text="Screen", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Screen")).grid(row=3, column=0, padx=10)
+
+        Button(self.button_frame, text="Keyboard", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Keyboard")).grid(row=4, column=0, padx=10)
+
+        Button(self.button_frame, text="Mouse", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Mouse")).grid(row=5, column=0, padx=10)
+
+        Button(self.button_frame, text="Headphones", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Headphones")).grid(row=6, column=0, padx=10)
+
+        Button(self.button_frame, text="Accessories", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Accessories")).grid(row=7, column=0, padx=10)
+
+        Button(self.button_frame, text="Others", pady=10, font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
+               command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
+
+    def buy_product(self, product):
+        pass
+
+    def HideAllFrame(self):
+        for widget in self.products_frame.winfo_children():
+            widget.destroy()
+
+    def ShowFrames(self, phanloai):
+        self.HideAllFrame()
+
+        # Tạo khung Canvas để chứa các sản phẩm
+        canvas = Canvas(self.products_frame, bg="#252d35")
+        canvas.pack(side=LEFT, fill=BOTH, expand=True)
+
+        # Tạo thanh cuộn dọc
+        scrollbar = Scrollbar(self.products_frame, orient=VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        # Thiết lập khung Canvas để sử dụng thanh cuộn
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        # Tạo khung con trong Canvas để chứa sản phẩm
+        frame = Frame(canvas, bg="#252d35")
+        canvas.create_window((0, 0), window=frame, anchor="nw")
+
+        self.image_products = []
+        self.button_add = []  # Khởi tạo danh sách mới cho button_add
+        count = 0
+        for product in self.products:
+            if product[1] == phanloai:
+                lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35", text=product[3],
+                                font=("Comic Sans MS", 12, "bold"), labelanchor=N)
+                lf.grid(row=count // 3, column=count % 3, padx=10, pady=10)
+
+                self.image_products.append(xuly_image(product[5], 120, 100))
+                label_image = Label(lf, image=self.image_products[count])
+                label_image.grid(row=2, column=0, padx=85, pady=5)
+
+                Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
+                Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
+
+                button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Change Info",
+                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
+                                    activebackground="green", activeforeground="white")
+                button_add.grid(row=4, column=0, padx=85, pady=5)
+                self.button_add.append(button_add)
+                count += 1
+            else:
+                continue
+
+        # Cập nhật thanh cuộn khi có thay đổi
+        canvas.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
 
 
 def main():
