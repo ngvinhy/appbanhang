@@ -16,8 +16,7 @@ class MainAccountScreen:
         self.root.title("TECH HUB SHOP")
         self.root.resizable(width=False, height=False)
 
-        tk.Label(text="Select Your Choice", fg="white", bg="#252d35", width="300", height="1",
-                 font=("Comic Sans MS", 13, "bold")).pack()
+        tk.Label(text="Select Your Choice", fg="white", bg="#252d35", width="300", height="1", font=("Comic Sans MS", 13, "bold")).pack()
 
         login_frame = tk.LabelFrame(self.root, bd=2, relief="groove")
         login_frame.pack()
@@ -26,14 +25,11 @@ class MainAccountScreen:
         img1 = tk.Label(login_frame, image=image_cover)
         img1.pack(side="top", fill=tk.BOTH)
 
-        tk.Button(login_frame, text="Login", height="2", width="15", command=self.login,
-                  font=("Comic Sans MS", 10, "bold")).place(x=360, y=265)
+        tk.Button(login_frame, text="Login", height="2", width="15", command=self.login, font=("Comic Sans MS", 10, "bold")).place(x=360, y=265)
 
-        tk.Button(login_frame, text="Register", height="2", width="15", command=self.register,
-                  font=("Comic Sans MS", 10, "bold")).place(x=360, y=320)
+        tk.Button(login_frame, text="Register", height="2", width="15", command=self.register, font=("Comic Sans MS", 10, "bold")).place(x=360, y=320)
 
-        tk.Button(login_frame, text="Admin", height="1", width="7", command=self.admin,
-                  font=("Comic Sans MS", 10, "bold")).place(x=775, y=10)
+        tk.Button(login_frame, text="Admin", height="1", width="7", command=self.admin, font=("Comic Sans MS", 10, "bold")).place(x=775, y=10)
 
         self.root.mainloop()
 
@@ -44,39 +40,34 @@ class MainAccountScreen:
         self.register_screen.resizable(width=False, height=False)
         self.username = StringVar()
         self.password = StringVar()
-        Label(self.register_screen, text="Please enter details below").pack()
-        Label(self.register_screen, text="").pack()
+        Label(self.register_screen, text="Please enter details below").pack(pady=5)
         username_lable = Label(self.register_screen, text="Username")
-        username_lable.pack()
+        username_lable.pack(pady=5)
         username_entry = Entry(self.register_screen, textvariable=self.username)
-        username_entry.pack()
+        username_entry.pack(pady=5)
         password_lable = Label(self.register_screen, text="Password")
-        password_lable.pack()
+        password_lable.pack(pady=5)
         password_entry = Entry(self.register_screen, textvariable=self.password, show='*')
-        password_entry.pack()
-        Label(self.register_screen, text="").pack()
-        Button(self.register_screen, text="Register", width=10, height=1, command=self.register_user).pack()
+        password_entry.pack(pady=5)
+        Button(self.register_screen, text="Register", width=10, height=1, command=self.register_user).pack(pady=5)
 
     def login(self):
         self.login_screen = Toplevel(self.root)
         self.login_screen.title("Login")
         self.login_screen.geometry("300x250")
         self.login_screen.resizable(width=False, height=False)
-        Label(self.login_screen, text="Please enter details below to login").pack()
-        Label(self.login_screen, text="").pack()
+        Label(self.login_screen, text="Please enter details below to login").pack(pady=5)
 
         self.username_verify = StringVar()
         self.password_verify = StringVar()
 
-        Label(self.login_screen, text="Username").pack()
+        Label(self.login_screen, text="Username").pack(pady=5)
         self.username_login_entry = Entry(self.login_screen, textvariable=self.username_verify)
-        self.username_login_entry.pack()
-        Label(self.login_screen, text="").pack()
-        Label(self.login_screen, text="Password").pack()
+        self.username_login_entry.pack(pady=5)
+        Label(self.login_screen, text="Password").pack(pady=5)
         self.password_login_entry = Entry(self.login_screen, textvariable=self.password_verify, show='*')
-        self.password_login_entry.pack()
-        Label(self.login_screen, text="").pack()
-        Button(self.login_screen, text="Login", width=10, height=1, command=self.login_verify).pack()
+        self.password_login_entry.pack(pady=5)
+        Button(self.login_screen, text="Login", width=10, height=1, command=self.login_verify).pack(pady=5)
 
     def register_user(self):
         username_info = self.username.get()
@@ -105,25 +96,9 @@ class MainAccountScreen:
                 self.root.destroy()
                 main()
             else:
-                self.password_not_recognised()
+                messagebox.showerror("Account", "Invalid Password")
         else:
-            self.user_not_found()
-
-    def password_not_recognised(self):
-        password_not_recog_screen = Toplevel(self.login_screen)
-        password_not_recog_screen.title("Account")
-        password_not_recog_screen.geometry("150x100")
-        password_not_recog_screen.resizable(width=False, height=False)
-        Label(password_not_recog_screen, text="Invalid Password ").pack()
-        Button(password_not_recog_screen, text="OK", command=password_not_recog_screen.destroy).pack()
-
-    def user_not_found(self):
-        user_not_found_screen = Toplevel(self.login_screen)
-        user_not_found_screen.title("Account")
-        user_not_found_screen.geometry("150x100")
-        user_not_found_screen.resizable(width=False, height=False)
-        Label(user_not_found_screen, text="User Not Found").pack()
-        Button(user_not_found_screen, text="OK", command=user_not_found_screen.destroy).pack()
+            messagebox.showerror("Account", "User Not Found")
 
     def admin(self):
         self.root.destroy()
@@ -155,16 +130,15 @@ class Product:
 class Mainmenu(Frame):
     def __init__(self, master):
         super().__init__(master)
+        self.quantity_entries = []
         self.products_frame = LabelFrame(self.master, bd=3, relief="raised", text="PRODUCTS",
                                          font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
         self.button_frame = LabelFrame(self.master, bd=3, relief="raised", text="CATEGORY",
                                        font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
         self.heading = LabelFrame(self.master, bd=3, relief="raised", bg="#080a0d")
         self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo.png?updatedAt=1682769745947", 100, 40)
-        self.lf = []
-        self.button_add = []
-        self.lf1 = []
         self.image_products = []
+        self.lf_list = []
         self.pack()
         self.master.geometry("1180x740")
         self.master.title("TECH HUB SHOP")
@@ -224,8 +198,37 @@ class Mainmenu(Frame):
                bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
                command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
-    def buy_product(self, product):
-        self.cart_list.append(product)
+    def buy_product(self, product, quantity, phanloai):
+        if quantity.strip() == "":
+            self.cart_list.append(product)
+            messagebox.showinfo("Success", "Product added to cart successfully")
+            self.update_quantity_temporary(product, 1, phanloai)
+        else:
+            try:
+                quantity = int(quantity)
+                if 0 < quantity <= int(product[6]):
+                    for i in range(quantity):
+                        self.cart_list.append(product)
+                    messagebox.showinfo("Success", "Product added to cart successfully")
+                    self.update_quantity_temporary(product, quantity, phanloai)
+                elif quantity <= 0:
+                    messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
+                else:
+                    messagebox.showerror("Invalid Quantity", "The quantity exceeds the available stock")
+            except ValueError:
+                messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
+
+    def update_quantity_temporary(self, product, quantity, phanloai):  # Hiển thị số lượng tạm thời trên giao diện
+        for i in range(len(self.products)):
+            if self.products[i][0] == product[0]:
+                current_quantity = int(self.products[i][6])
+                new_quantity = current_quantity - quantity
+                if 0 < int(new_quantity) <= 9:
+                    self.products[i][6] = "0" + str(new_quantity)
+                else:
+                    self.products[i][6] = str(new_quantity)
+                break
+        self.ShowFrames(phanloai)
 
     def HideAllFrame(self):
         for widget in self.products_frame.winfo_children():
@@ -250,8 +253,7 @@ class Mainmenu(Frame):
         frame = Frame(canvas, bg="#252d35")
         canvas.create_window((0, 0), window=frame, anchor="nw")
 
-        self.image_products = []
-        self.button_add = []  # Khởi tạo danh sách mới cho button_add
+        self.image_products = []  # Xóa list hình ảnh cũ
         count = 0
         for product in self.products:
             if product[1] == phanloai:
@@ -266,11 +268,18 @@ class Mainmenu(Frame):
                 Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
                 Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
 
-                button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Add to Cart",
-                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="green", relief=SOLID,
-                                    activebackground="green", activeforeground="white")
-                button_add.grid(row=4, column=0, padx=85, pady=5)
-                self.button_add.append(button_add)
+                if int(product[6]) > 0:
+                    Label(lf, text="Quantity: " + product[6], font=("Comic Sans MS", 12, "bold"), fg="white",
+                          bg="#252d35").grid(row=4, column=0, padx=85, pady=5)
+                    quantity_entry = Entry(lf, font=("Comic Sans MS", 12, "bold"), width=2)
+                    quantity_entry.grid(row=5, column=0, padx=(65, 5), pady=5, sticky="w")
+                    self.quantity_entries.append(quantity_entry)
+                    Button(lf, command=lambda p=product, q=quantity_entry, pl=phanloai: self.buy_product(p, q.get(), pl),
+                           text="Add to Cart", font=("Comic Sans MS", 12, "bold"), fg="white", bg="green", relief=SOLID,
+                           activebackground="green", activeforeground="white").grid(row=5, column=0, padx=85, pady=5)
+                else:
+                    Button(lf, state=DISABLED, text="Sold Out", font=("Comic Sans MS", 12, "bold"),
+                           relief=SOLID).grid(row=5, column=0, padx=85, pady=5)
                 count += 1
             else:
                 continue
@@ -307,14 +316,14 @@ class Mainmenu(Frame):
         canvas.create_window((0, 0), window=frame, anchor="nw")
 
         self.image_products = []  # Xóa list hình ảnh sản phẩm
-        self.lf1 = []  # Xóa list label frames
+        self.lf_list = []  # Xóa list label frames
         count = 0  # Khởi tạo biến đếm để định vị vị trí
 
         for i in range(len(self.cart_list)):
             lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35",
                             text=self.cart_list[i][3], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
             lf.grid(row=count // 3, column=count % 3, padx=10, pady=5)
-            self.lf1.append(lf)  # Thêm label frame vào list
+            self.lf_list.append(lf)  # Thêm label frame vào list
             product_name = self.cart_list[i][2]
             product_image = self.cart_list[i][5]
             product_price = self.cart_list[i][4]
@@ -346,8 +355,8 @@ class Mainmenu(Frame):
 
     def remove_item(self, idx):
         if 0 <= idx < len(self.cart_list):
-            self.lf1[idx].destroy()
-            del self.lf1[idx]  # Xóa label frame khỏi list
+            self.lf_list[idx].destroy()
+            del self.lf_list[idx]  # Xóa label frame khỏi list
             self.cart_list.pop(idx)
         self.show_cart()  # Load lại giao diện cart
 
@@ -623,14 +632,20 @@ class Admin:
         self.change_price_screen.resizable(width=False, height=False)
         self.new_price = StringVar()
         Label(self.change_price_screen, text="New Price", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
-        self.new_price_entry = Entry(self.change_price_screen, textvariable=self.new_price)
+        self.new_price_entry = Entry(self.change_price_screen, textvariable=self.new_price, font=("Comic Sans MS", 12, "bold"))
         self.new_price_entry.pack()
         Button(self.change_price_screen, text="Confirm", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
                activebackground="green", activeforeground="#F6F5EC", command=lambda: self.confirm_change_price(product_info, self.new_price.get())).pack(pady=10)
 
     def confirm_change_price(self, product_info, new_price):
-        formatted_price = "{:,.0f}₫".format(float(new_price)).replace(",", ".")
-        product_info[4] = formatted_price
+        try:
+            if float(new_price) < 0:
+                messagebox.showerror("Invalid Price", "Please enter a valid price")
+            else:
+                formatted_price = "{:,.0f}₫".format(float(new_price)).replace(",", ".")
+                product_info[4] = formatted_price
+        except ValueError:
+            messagebox.showerror("Invalid Price", "Please enter a valid price")
 
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
@@ -660,14 +675,23 @@ class Admin:
         self.change_quantity_screen.resizable(width=False, height=False)
         self.new_quantity = StringVar()
         Label(self.change_quantity_screen, text="New Quantity", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
-        self.new_quantity_entry = Entry(self.change_quantity_screen, textvariable=self.new_quantity)
+        self.new_quantity_entry = Entry(self.change_quantity_screen, textvariable=self.new_quantity, font=("Comic Sans MS", 12, "bold"))
         self.new_quantity_entry.pack()
         Button(self.change_quantity_screen, text="Confirm", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
                activebackground="green", activeforeground="#F6F5EC",
                command=lambda: self.confirm_change_quantity(product_info, self.new_quantity.get())).pack(pady=10)
 
     def confirm_change_quantity(self, product_info, new_quantity):
-        product_info[6] = new_quantity
+        try:
+            if int(new_quantity) < 0:
+                messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
+            else:
+                if int(new_quantity) <= 9:
+                    product_info[6] = "0" + new_quantity
+                else:
+                    product_info[6] = new_quantity
+        except ValueError:
+            messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
 
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
