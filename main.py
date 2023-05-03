@@ -267,7 +267,7 @@ class Mainmenu(Frame):
                 Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
 
                 button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Add to Cart",
-                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
+                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="green", relief=SOLID,
                                     activebackground="green", activeforeground="white")
                 button_add.grid(row=4, column=0, padx=85, pady=5)
                 self.button_add.append(button_add)
