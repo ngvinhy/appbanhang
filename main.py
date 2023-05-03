@@ -130,7 +130,6 @@ class Product:
 class Mainmenu(Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.quantity_entries = []
         self.products_frame = LabelFrame(self.master, bd=3, relief="raised", text="PRODUCTS",
                                          font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
         self.button_frame = LabelFrame(self.master, bd=3, relief="raised", text="CATEGORY",
@@ -146,6 +145,7 @@ class Mainmenu(Frame):
         self.products = Product.get_data()
         self.cart_list = []
         self.create_widgets()
+        self.quantity_entries = []
 
     def create_widgets(self):
         self.heading.place(x=0, y=0, width=1180, height=60)
@@ -252,7 +252,6 @@ class Mainmenu(Frame):
         # Tạo khung con trong Canvas để chứa sản phẩm
         frame = Frame(canvas, bg="#252d35")
         canvas.create_window((0, 0), window=frame, anchor="nw")
-
         self.image_products = []  # Xóa list hình ảnh cũ
         count = 0
         for product in self.products:
@@ -279,7 +278,7 @@ class Mainmenu(Frame):
                            activebackground="green", activeforeground="white").grid(row=5, column=0, padx=85, pady=5)
                 else:
                     Button(lf, state=DISABLED, text="Sold Out", font=("Comic Sans MS", 12, "bold"),
-                           relief=SOLID).grid(row=5, column=0, padx=85, pady=5)
+                           relief=SOLID).grid(row=4, column=0, padx=85, pady=25)
                 count += 1
             else:
                 continue
