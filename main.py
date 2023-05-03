@@ -685,7 +685,7 @@ class Admin:
             if int(new_quantity) < 0:
                 messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
             else:
-                if int(new_quantity) <= 9:
+                if 0 < int(new_quantity) <= 9:
                     product_info[6] = "0" + new_quantity
                 else:
                     product_info[6] = new_quantity
