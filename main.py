@@ -263,14 +263,8 @@ class Mainmenu(Frame):
                 label_image = Label(lf, image=self.image_products[count])
                 label_image.grid(row=2, column=0, padx=85, pady=5)
 
-                Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1,
-                                                                                                              column=0,
-                                                                                                              padx=85,
-                                                                                                              pady=5)
-                Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3,
-                                                                                                              column=0,
-                                                                                                              padx=85,
-                                                                                                              pady=5)
+                Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
+                Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
 
                 button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Add to Cart",
                                     font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
@@ -547,8 +541,96 @@ class Admin:
                bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
                command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
-    def buy_product(self, product):
-        pass
+    def change_info(self, product):
+        self.change_info_screen = Toplevel(self.root)
+        self.change_info_screen.title("Product Information")
+        self.change_info_screen.geometry("300x200")
+        self.change_info_screen.resizable(width=False, height=False)
+        Label(self.change_info_screen, text="ID: " + product[0], font=("Comic Sans MS", 12, "bold")).pack()
+        Label(self.change_info_screen, text=product[2] + " " + product[3], font=("Comic Sans MS", 12, "bold")).pack(pady=5)
+
+        self.info_frame = Frame(self.change_info_screen)
+        self.info_frame.pack(pady=10)
+
+        Label(self.info_frame, text="Price: " + product[4], pady=10, font=("Comic Sans MS", 12, "bold")).grid(row=0, column=0, padx=10)
+        Label(self.info_frame, text="Quantity: " + product[6], pady=10, font=("Comic Sans MS", 12, "bold")).grid(row=1, column=0, padx=10)
+        Button(self.info_frame, text="Change", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
+               activebackground="green", activeforeground="#F6F5EC", command=lambda: self.change_price(product)).grid(row=0, column=1, padx=10)
+        Button(self.info_frame, text="Change", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
+               activebackground="green", activeforeground="#F6F5EC", command=lambda: self.change_quantity(product)).grid(row=1, column=1, padx=10)
+
+    def change_price(self, product_info):
+        self.change_price_screen = Toplevel(self.change_info_screen)
+        self.change_price_screen.title("Price")
+        self.change_price_screen.geometry("250x150")
+        self.change_price_screen.resizable(width=False, height=False)
+        self.new_price = StringVar()
+        Label(self.change_price_screen, text="New Price", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
+        self.new_price_entry = Entry(self.change_price_screen, textvariable=self.new_price)
+        self.new_price_entry.pack()
+        Button(self.change_price_screen, text="Confirm", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
+               activebackground="green", activeforeground="#F6F5EC", command=lambda: self.confirm_change_price(product_info, self.new_price.get())).pack(pady=10)
+
+    def confirm_change_price(self, product_info, new_price):
+        product_info[4] = new_price
+
+        # Đọc toàn bộ nội dung của file CSV vào một danh sách
+        with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
+            reader = csv.reader(file)
+            data = list(reader)
+
+        # Tìm vị trí của sản phẩm cần thay đổi trong danh sách và thay đổi giá trị của nó
+        for i, row in enumerate(data):
+            if row[0] == product_info[0]:
+                data[i] = product_info
+                break
+
+        # Ghi lại danh sách đã được cập nhật vào file CSV
+        with open("Products.csv", "w", newline="", encoding="UTF-8") as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+
+        self.change_price_screen.destroy()
+        self.change_info_screen.destroy()
+        self.change_info(product_info)
+        self.ShowFrames(product_info[1])
+
+    def change_quantity(self, product_info):
+        self.change_quantity_screen = Toplevel(self.change_info_screen)
+        self.change_quantity_screen.title("Quantity")
+        self.change_quantity_screen.geometry("250x150")
+        self.change_quantity_screen.resizable(width=False, height=False)
+        self.new_quantity = StringVar()
+        Label(self.change_quantity_screen, text="New Quantity", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
+        self.new_quantity_entry = Entry(self.change_quantity_screen, textvariable=self.new_quantity)
+        self.new_quantity_entry.pack()
+        Button(self.change_quantity_screen, text="Confirm", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
+               activebackground="green", activeforeground="#F6F5EC",
+               command=lambda: self.confirm_change_quantity(product_info, self.new_quantity.get())).pack(pady=10)
+
+    def confirm_change_quantity(self, product_info, new_quantity):
+        product_info[6] = new_quantity
+
+        # Đọc toàn bộ nội dung của file CSV vào một danh sách
+        with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
+            reader = csv.reader(file)
+            data = list(reader)
+
+        # Tìm vị trí của sản phẩm cần thay đổi trong danh sách và thay đổi giá trị của nó
+        for i, row in enumerate(data):
+            if row[0] == product_info[0]:
+                data[i] = product_info
+                break
+
+        # Ghi lại danh sách đã được cập nhật vào file CSV
+        with open("Products.csv", "w", newline="", encoding="UTF-8") as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+
+        self.change_quantity_screen.destroy()
+        self.change_info_screen.destroy()
+        self.change_info(product_info)
+        self.ShowFrames(product_info[1])
 
     def HideAllFrame(self):
         for widget in self.products_frame.winfo_children():
@@ -588,11 +670,12 @@ class Admin:
 
                 Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
                 Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
+                Label(lf, text="Quantity: " + product[6], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=4, column=0, padx=85, pady=5)
 
-                button_add = Button(lf, command=lambda p=product: self.buy_product(p), text="Change Info",
+                button_add = Button(lf, command=lambda p=product: self.change_info(p), text="Change Info",
                                     font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
                                     activebackground="green", activeforeground="white")
-                button_add.grid(row=4, column=0, padx=85, pady=5)
+                button_add.grid(row=5, column=0, padx=85, pady=5)
                 self.button_add.append(button_add)
                 count += 1
             else:
