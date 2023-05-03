@@ -352,7 +352,7 @@ class Mainmenu(Frame):
         self.show_cart()  # Load lại giao diện cart
 
     def tong(self):
-        return sum([float(product[4].replace(' ₫', '').replace('.', '')) for product in self.cart_list])
+        return sum([float(product[4].replace(" ₫", "").replace(".", "")) for product in self.cart_list])
 
     def show_bill(self):
         product_counts = Counter(product[0] for product in self.cart_list)
@@ -541,6 +541,59 @@ class Admin:
                bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
                command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
+    def HideAllFrame(self):
+        for widget in self.products_frame.winfo_children():
+            widget.destroy()
+
+    def ShowFrames(self, phanloai):
+        self.HideAllFrame()
+
+        # Tạo khung Canvas để chứa các sản phẩm
+        canvas = Canvas(self.products_frame, bg="#252d35")
+        canvas.pack(side=LEFT, fill=BOTH, expand=True)
+
+        # Tạo thanh cuộn dọc
+        scrollbar = Scrollbar(self.products_frame, orient=VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        # Thiết lập khung Canvas để sử dụng thanh cuộn
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        # Tạo khung con trong Canvas để chứa sản phẩm
+        frame = Frame(canvas, bg="#252d35")
+        canvas.create_window((0, 0), window=frame, anchor="nw")
+
+        self.image_products = []
+        self.button_add = []  # Khởi tạo danh sách mới cho button_add
+        count = 0
+        for product in self.products:
+            if product[1] == phanloai:
+                lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35", text=product[3],
+                                font=("Comic Sans MS", 12, "bold"), labelanchor=N)
+                lf.grid(row=count // 3, column=count % 3, padx=10, pady=10)
+
+                self.image_products.append(xuly_image(product[5], 120, 100))
+                label_image = Label(lf, image=self.image_products[count])
+                label_image.grid(row=2, column=0, padx=85, pady=5)
+
+                Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
+                Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
+                Label(lf, text="Quantity: " + product[6], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=4, column=0, padx=85, pady=5)
+
+                button_add = Button(lf, command=lambda p=product: self.change_info(p), text="Change Info",
+                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
+                                    activebackground="green", activeforeground="white")
+                button_add.grid(row=5, column=0, padx=85, pady=5)
+                self.button_add.append(button_add)
+                count += 1
+            else:
+                continue
+
+        # Cập nhật thanh cuộn khi có thay đổi
+        canvas.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
+
     def change_info(self, product):
         self.change_info_screen = Toplevel(self.root)
         self.change_info_screen.title("Product Information")
@@ -572,7 +625,8 @@ class Admin:
                activebackground="green", activeforeground="#F6F5EC", command=lambda: self.confirm_change_price(product_info, self.new_price.get())).pack(pady=10)
 
     def confirm_change_price(self, product_info, new_price):
-        product_info[4] = new_price
+        formatted_price = "{:,.0f} ₫".format(float(new_price)).replace(",", ".")
+        product_info[4] = formatted_price
 
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
@@ -631,59 +685,6 @@ class Admin:
         self.change_info_screen.destroy()
         self.change_info(product_info)
         self.ShowFrames(product_info[1])
-
-    def HideAllFrame(self):
-        for widget in self.products_frame.winfo_children():
-            widget.destroy()
-
-    def ShowFrames(self, phanloai):
-        self.HideAllFrame()
-
-        # Tạo khung Canvas để chứa các sản phẩm
-        canvas = Canvas(self.products_frame, bg="#252d35")
-        canvas.pack(side=LEFT, fill=BOTH, expand=True)
-
-        # Tạo thanh cuộn dọc
-        scrollbar = Scrollbar(self.products_frame, orient=VERTICAL, command=canvas.yview)
-        scrollbar.pack(side=RIGHT, fill=Y)
-
-        # Thiết lập khung Canvas để sử dụng thanh cuộn
-        canvas.configure(yscrollcommand=scrollbar.set)
-        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-
-        # Tạo khung con trong Canvas để chứa sản phẩm
-        frame = Frame(canvas, bg="#252d35")
-        canvas.create_window((0, 0), window=frame, anchor="nw")
-
-        self.image_products = []
-        self.button_add = []  # Khởi tạo danh sách mới cho button_add
-        count = 0
-        for product in self.products:
-            if product[1] == phanloai:
-                lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35", text=product[3],
-                                font=("Comic Sans MS", 12, "bold"), labelanchor=N)
-                lf.grid(row=count // 3, column=count % 3, padx=10, pady=10)
-
-                self.image_products.append(xuly_image(product[5], 120, 100))
-                label_image = Label(lf, image=self.image_products[count])
-                label_image.grid(row=2, column=0, padx=85, pady=5)
-
-                Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
-                Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
-                Label(lf, text="Quantity: " + product[6], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=4, column=0, padx=85, pady=5)
-
-                button_add = Button(lf, command=lambda p=product: self.change_info(p), text="Change Info",
-                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
-                                    activebackground="green", activeforeground="white")
-                button_add.grid(row=5, column=0, padx=85, pady=5)
-                self.button_add.append(button_add)
-                count += 1
-            else:
-                continue
-
-        # Cập nhật thanh cuộn khi có thay đổi
-        canvas.update_idletasks()
-        canvas.config(scrollregion=canvas.bbox("all"))
 
 
 def main():
