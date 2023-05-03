@@ -182,7 +182,7 @@ class Mainmenu(Frame):
               bg="#080a0d").grid(row=0, column=2, padx=285, pady=5)
 
         Button(self.heading, text="Shopping Cart", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
-               bg="#252d35", relief=SOLID, activebackground="#252d35", activeforeground="#F6F5EC",
+               bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
                command=self.show_cart).grid(row=0, column=3, padx=10, pady=5)
 
         self.button_frame.place(x=0, y=60, width=130, height=680)
@@ -500,7 +500,11 @@ class Admin:
         Label(self.heading, image=self.image_logo).grid(row=0, column=0, padx=10, pady=5)
 
         Label(self.heading, text="Products Management", font=("Comic Sans MS", 16, BOLD), fg="white",
-              bg="#080a0d").grid(row=0, column=2, padx=375, pady=5)
+              bg="#080a0d").grid(row=0, column=2, padx=345, pady=5)
+
+        Button(self.heading, text="Add Product", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
+               bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
+               command=self.add_product).grid(row=0, column=3, padx=10, pady=5)
 
         self.button_frame.place(x=0, y=60, width=130, height=680)
         self.products_frame.place(x=130, y=60, width=1050, height=680)
@@ -582,7 +586,7 @@ class Admin:
                 Label(lf, text="Quantity: " + product[6], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=4, column=0, padx=85, pady=5)
 
                 button_add = Button(lf, command=lambda p=product: self.change_info(p), text="Change Info",
-                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35", relief=SOLID,
+                                    font=("Comic Sans MS", 12, "bold"), fg="white", bg="green", relief=SOLID,
                                     activebackground="green", activeforeground="white")
                 button_add.grid(row=5, column=0, padx=85, pady=5)
                 self.button_add.append(button_add)
@@ -685,6 +689,9 @@ class Admin:
         self.change_info_screen.destroy()
         self.change_info(product_info)
         self.ShowFrames(product_info[1])
+
+    def add_product(self):
+        pass
 
 
 def main():
