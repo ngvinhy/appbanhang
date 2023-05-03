@@ -334,10 +334,10 @@ class Mainmenu(Frame):
         canvas.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
 
-        self.total_label = Label(total_frame, text="Total: 0 ₫", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
+        self.total_label = Label(total_frame, text="Total: 0₫", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                  bg="#252d35")
         self.total_label.pack(side=LEFT, padx=10, pady=5)
-        self.total_label.config(text="Total: {:,} ₫".format(self.tong()).replace(".0", "").replace(",", "."))
+        self.total_label.config(text="Total: {:,.0f}₫".format(self.tong()).replace(".0", "").replace(",", "."))
 
         payment_button = Button(total_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                 bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
@@ -352,7 +352,7 @@ class Mainmenu(Frame):
         self.show_cart()  # Load lại giao diện cart
 
     def tong(self):
-        return sum([float(product[4].replace(" ₫", "").replace(".", "")) for product in self.cart_list])
+        return sum([float(product[4].replace("₫", "").replace(".", "")) for product in self.cart_list])
 
     def show_bill(self):
         product_counts = Counter(product[0] for product in self.cart_list)
@@ -369,12 +369,12 @@ class Mainmenu(Frame):
                 product_name = product_details[2] + " " + product_details[3]
                 product_price = product_details[4]
                 quantity = product_counts[product_id]
-                total_price = int(product_price.replace(" ₫", "").replace(".", "")) * quantity
+                total_price = float(product_price.replace("₫", "").replace(".", "")) * quantity
                 total_amount += total_price  # Update the total amount
                 receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
                 row += 1
 
-        receipt += "\nTotal: {:,} ₫".format(total_amount).replace(",", ".")
+        receipt += "\nTotal: {:,.0f}₫".format(float(total_amount)).replace(",", ".")
         messagebox.showinfo("Order Confirmed", receipt)
         self.cart_list.clear()
         self.bill_window.destroy()
@@ -426,8 +426,8 @@ class Mainmenu(Frame):
                         existing_quantity = int(quantity_labels[existing_index]['text'])
                         new_quantity = existing_quantity + 1
                         quantity_labels[existing_index].configure(text=str(new_quantity))
-                        total_price = int(product_price.replace(" ₫", "").replace(".", "").strip()) * new_quantity
-                        total_labels[existing_index].configure(text="{:,} ₫".format(total_price).replace(",", "."))
+                        total_price = int(product_price.replace("₫", "").replace(".", "").strip()) * new_quantity
+                        total_labels[existing_index].configure(text="{:,.0f}₫".format(float(total_price)).replace(",", "."))
                     else:
                         # If the code doesn't exist, add new labels
                         code_label = Label(self.bill_window, text=product_code, font=("Comic Sans MS", 12, BOLD))
@@ -446,10 +446,10 @@ class Mainmenu(Frame):
                         price_label.grid(row=row, column=3, padx=10, pady=5)
                         price_labels.append(price_label)
                         # Process the product price and calculate the total
-                        product_price = product_price.replace(" ₫", "").replace(".", "").strip()
+                        product_price = product_price.replace("₫", "").replace(".", "").strip()
                         total_price = int(product_price) * 1
                         total_amount += total_price
-                        total_label = Label(self.bill_window, text="{:,} ₫".format(total_price).replace(",", "."),
+                        total_label = Label(self.bill_window, text="{:,}₫".format(total_price).replace(",", "."),
                                             font=("Comic Sans MS", 12, BOLD))
                         total_label.grid(row=row, column=4, padx=10, pady=5)
                         total_labels.append(total_label)
@@ -459,7 +459,7 @@ class Mainmenu(Frame):
             line_label.grid(row=row, column=0, columnspan=5, padx=10, pady=5)
             # Display the total amount
             row += 1  # Increment the row variable
-            total_label = Label(self.bill_window, text="Total Amount: {:,} ₫".format(self.tong()).replace(".0", "").replace(",", "."),
+            total_label = Label(self.bill_window, text="Total Amount: {:,.0f}₫".format(self.tong()).replace(".0", "").replace(",", "."),
                                 font=("Comic Sans MS", 12, BOLD))
             total_label.grid(row=row, column=0, columnspan=2, padx=10, pady=10)
             # Add Confirm button
@@ -625,7 +625,7 @@ class Admin:
                activebackground="green", activeforeground="#F6F5EC", command=lambda: self.confirm_change_price(product_info, self.new_price.get())).pack(pady=10)
 
     def confirm_change_price(self, product_info, new_price):
-        formatted_price = "{:,.0f} ₫".format(float(new_price)).replace(",", ".")
+        formatted_price = "{:,.0f}₫".format(float(new_price)).replace(",", ".")
         product_info[4] = formatted_price
 
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
