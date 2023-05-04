@@ -1,6 +1,7 @@
 import csv
 from datetime import *
 from tkinter.font import BOLD
+import PIL
 from xulyanh import *
 from tkinter import *
 import os
@@ -232,8 +233,10 @@ class Mainmenu(Frame):
                 lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35", text=product[3],
                                 font=("Comic Sans MS", 12, "bold"), labelanchor=N)
                 lf.grid(row=count // 3, column=count % 3, padx=10, pady=10)
-
-                self.image_products.append(xuly_image(product[5], 120, 100))
+                try:
+                    self.image_products.append(xuly_image(product[5], 120, 100))
+                except PIL.UnidentifiedImageError:
+                    self.image_products.append(xuly_image("https://ik.imagekit.io/nhom2/404.png?updatedAt=1683199218403", 120, 100))
                 label_image = Label(lf, image=self.image_products[count])
                 label_image.grid(row=2, column=0, padx=85, pady=5)
 
@@ -609,8 +612,10 @@ class Admin:
                 lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35", text=product[3],
                                 font=("Comic Sans MS", 12, "bold"), labelanchor=N)
                 lf.grid(row=count // 3, column=count % 3, padx=10, pady=10)
-
-                self.image_products.append(xuly_image(product[5], 120, 100))
+                try:
+                    self.image_products.append(xuly_image(product[5], 120, 100))
+                except PIL.UnidentifiedImageError:
+                    self.image_products.append(xuly_image("https://ik.imagekit.io/nhom2/404.png?updatedAt=1683199218403", 120, 100))
                 label_image = Label(lf, image=self.image_products[count])
                 label_image.grid(row=2, column=0, padx=85, pady=5)
 
@@ -665,7 +670,9 @@ class Admin:
         self.new_price_entry.delete(0, END)
         try:
             if float(new_price) < 0:
-                self.change_price_screen.config(Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
+                self.change_price_screen.destroy()
+                self.change_price(product_info)
+                Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
             else:
                 formatted_price = "{:,.0f}₫".format(float(new_price)).replace(",", ".")
                 product_info[4] = formatted_price
@@ -674,7 +681,9 @@ class Admin:
                 messagebox.showinfo("Success", "Your changes have been saved!")
                 self.ShowFrames(product_info[1])
         except ValueError:
-            self.change_price_screen.config(Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
+            self.change_price_screen.destroy()
+            self.change_price(product_info)
+            Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
 
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
@@ -695,7 +704,7 @@ class Admin:
     def change_quantity(self, product_info):
         self.change_quantity_screen = Toplevel(self.change_info_screen)
         self.change_quantity_screen.title("Quantity")
-        self.change_quantity_screen.geometry("250x160")
+        self.change_quantity_screen.geometry("250x300")
         self.change_quantity_screen.resizable(width=False, height=False)
         self.new_quantity = StringVar()
         Label(self.change_quantity_screen, text="New Quantity", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
@@ -709,7 +718,9 @@ class Admin:
         self.new_quantity_entry.delete(0, END)
         try:
             if int(new_quantity) < 0:
-                self.change_quantity_screen.config(Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
+                self.change_quantity_screen.destroy()
+                self.change_quantity(product_info)
+                Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
             else:
                 if 0 < int(new_quantity) <= 9:
                     product_info[6] = "0" + new_quantity
@@ -720,8 +731,9 @@ class Admin:
                 messagebox.showinfo("Success", "Your changes have been saved!")
                 self.ShowFrames(product_info[1])
         except ValueError:
-            self.change_quantity_screen.config(Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
-
+            self.change_quantity_screen.destroy()
+            self.change_quantity(product_info)
+            Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
             reader = csv.reader(file)
