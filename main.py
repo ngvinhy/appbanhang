@@ -240,7 +240,7 @@ class Mainmenu(Frame):
                 label_image = Label(lf, image=self.image_products[count])
                 label_image.grid(row=2, column=0, padx=85, pady=5)
 
-                Label(lf, text=product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
+                Label(lf, text="Brand: " + product[2], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
                 Label(lf, text=product[4], font=("Comic Sans MS", 12, "bold"), fg="white", bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
 
                 if int(product[6]) > 0:
@@ -265,14 +265,15 @@ class Mainmenu(Frame):
         canvas.config(scrollregion=canvas.bbox("all"))
 
     def update_quantity_temporary(self, product, quantity):  # Hiển thị số lượng tạm thời trên giao diện
-        messagebox.showinfo("Success", "Product added to cart successfully!")
-        for i in range(int(quantity.strip())):
+        if quantity.strip() == "":
             self.cart_list.append(product)
-        new_quantity = int(product[6]) - int(quantity.strip())
-        if 0 < int(new_quantity) <= 9:
-            product[6] = "0" + str(new_quantity)
+            new_quantity = int(product[6]) - 1
         else:
-            product[6] = str(new_quantity)
+            for i in range(int(quantity.strip())):
+                self.cart_list.append(product)
+            new_quantity = int(product[6]) - int(quantity.strip())
+        product[6] = str("{:02d}".format(new_quantity))
+        messagebox.showinfo("Success", "Product added to cart successfully!")
         self.ShowFrames(product[1])
 
     def show_cart(self):
@@ -304,28 +305,55 @@ class Mainmenu(Frame):
 
         self.image_products = []  # Xóa list hình ảnh sản phẩm
         self.lf_list = []  # Xóa list label frames
+        self.quantity_labels = {}  # Tạo từ điển chứa nhãn số lượng sản phẩm
         count = 0  # Khởi tạo biến đếm để định vị vị trí
 
-        for i in range(len(self.cart_list)):
+        product_count = {}  # Tạo từ điển đếm số lượng sản phẩm cho từng mã code
+        for item in self.cart_list:
+            code = item[0]  # Mã code của sản phẩm
+            product_count[code] = product_count.get(code, 0) + 1
+        added_codes = []  # Danh sách mã code đã được xét
+        for item in self.cart_list:
+            code = item[0]  # Mã code của sản phẩm
+            if code in added_codes:
+                continue  # Bỏ qua nếu mã code đã được xét trước đó
+
             lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35",
-                            text=self.cart_list[i][3], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-            lf.grid(row=count // 3, column=count % 3, padx=10, pady=5)
+                            text=item[3], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+            lf.grid(row=len(added_codes) // 3, column=len(added_codes) % 3, padx=10, pady=5)
             self.lf_list.append(lf)  # Thêm label frame vào list
-            product_name = self.cart_list[i][2]
-            product_image = self.cart_list[i][5]
-            product_price = self.cart_list[i][4]
-            self.image_products.append(xuly_image(product_image, 120, 100))
+            added_codes.append(code)  # Thêm mã code vào danh sách đã xét
+
+            product_brand = item[2]
+            product_image = item[5]
+            product_price = item[4]
+            try:
+                self.image_products.append(xuly_image(product_image, 120, 100))
+            except PIL.UnidentifiedImageError:
+                self.image_products.append(xuly_image("https://ik.imagekit.io/nhom2/404.png?updatedAt=1683199218403", 120, 100))
             label_image = Label(lf, image=self.image_products[count])
             label_image.grid(row=2, column=0, padx=85, pady=5)
-            Label(lf, text=product_name, font=("Comic Sans MS", 12, "bold"), fg="white",
+            Label(lf, text="Brand: " + product_brand, font=("Comic Sans MS", 12, "bold"), fg="white",
                   bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
             Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white",
                   bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
-            Button(lf, command=lambda idx=i: self.remove_item(idx), text="Remove",
-                   font=("Comic Sans MS", 12, "bold"), fg="white", bg="red",
-                   activebackground="red", activeforeground="white").grid(row=4, column=0, padx=85, pady=5)
-            count += 1  # Tăng biến đếm
+            code = item[0]  # Mã code của sản phẩm
+            quantity = product_count[code] if code in product_count else 1
+            quantity_label = Label(lf, text="Quantity: {}".format(quantity), font=("Comic Sans MS", 12, "bold"),
+                                   fg="white", bg="#252d35")
+            quantity_label.grid(row=4, column=0, padx=85, pady=5)
+            self.quantity_labels[lf] = quantity_label  # Thêm nhãn số lượng vào từ điển với key là label frame
 
+            quantity_entry = ttk.Combobox(lf, values=list(range(1, int(quantity) + 1)), state="readonly",
+                                          font=("Comic Sans MS", 12, BOLD))
+            quantity_entry.configure(width=2, height=5)
+            quantity_entry.grid(row=5, column=0, padx=(85, 5), pady=5, sticky="w")
+            self.quantity_entries.append(quantity_entry)
+
+            Button(lf, command=lambda p=item, q=quantity_entry, cart_item=lf: self.remove_item(p, q, cart_item),
+                   text="Remove", font=("Comic Sans MS", 12, "bold"), fg="white", bg="red", activeforeground="white",
+                   activebackground="red").grid(row=5, column=0, padx=85, pady=5)
+            count += 1  # Tăng biến đếm
         # Cập nhật thanh cuộn khi có thay đổi
         canvas.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
@@ -337,14 +365,20 @@ class Mainmenu(Frame):
 
         payment_button = Button(total_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                 bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
-                                command=self.show_delivery_info_window)
+                                command=self.show_order)
         payment_button.pack(side=RIGHT, padx=10, pady=5)
 
-    def remove_item(self, idx):
-        if 0 <= idx < len(self.cart_list):
-            self.lf_list[idx].destroy()
-            del self.lf_list[idx]  # Xóa label frame khỏi list
-            self.cart_list.pop(idx)
+    def remove_item(self, item, quantity_entry, cart_item):
+        quantity = quantity_entry.get()  # Lấy giá trị của quantity_entry
+        if quantity.strip() == "":
+            quantity = 1  # Mặc định xóa 1 sản phẩm nếu dữ liệu nhập vào là rỗng
+        else:
+            quantity = int(quantity)
+        for i in range(quantity):
+            self.cart_list.remove(item)
+        item[6] = str("{:02d}".format(int(item[6]) + int(quantity)))
+        messagebox.showinfo("Success", "Products remove from cart successfully!")
+        cart_item.destroy()
         self.show_cart()  # Load lại giao diện cart
 
     def tong(self):
@@ -704,7 +738,7 @@ class Admin:
     def change_quantity(self, product_info):
         self.change_quantity_screen = Toplevel(self.change_info_screen)
         self.change_quantity_screen.title("Quantity")
-        self.change_quantity_screen.geometry("250x300")
+        self.change_quantity_screen.geometry("250x160")
         self.change_quantity_screen.resizable(width=False, height=False)
         self.new_quantity = StringVar()
         Label(self.change_quantity_screen, text="New Quantity", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
@@ -722,10 +756,7 @@ class Admin:
                 self.change_quantity(product_info)
                 Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
             else:
-                if 0 < int(new_quantity) <= 9:
-                    product_info[6] = "0" + new_quantity
-                else:
-                    product_info[6] = new_quantity
+                product_info[6] = str("{:02d}".format(int(new_quantity)))
                 self.change_quantity_screen.destroy()
                 self.change_info_screen.destroy()
                 messagebox.showinfo("Success", "Your changes have been saved!")
@@ -761,8 +792,7 @@ class Admin:
         frame.pack(padx=10, pady=5)
 
         # Create labels and entry fields for entering delivery information
-        labels = ["Product Category:", "Manufacturer:", "Product Name:", "Price:", "Image:",
-                  "Quantity:"]
+        labels = ["Category:", "Brand:", "Name:", "Price:", "Image:", "Quantity:"]
         self.entries = []
 
         for i, label_text in enumerate(labels):
