@@ -96,9 +96,19 @@ class MainAccountScreen:
                 self.root.destroy()
                 main()
             else:
-                messagebox.showerror("Account", "Invalid Password")
+                self.password_not_recognised()
         else:
-            messagebox.showerror("Account", "User Not Found")
+            self.user_not_found()
+
+    def password_not_recognised(self):
+        self.login_screen.destroy()
+        self.login()
+        Label(self.login_screen, text="Invalid Password", fg="red").pack(pady=5)
+
+    def user_not_found(self):
+        self.login_screen.destroy()
+        self.login()
+        Label(self.login_screen, text="User Not Found", fg="red").pack(pady=5)
 
     def admin(self):
         self.root.destroy()
@@ -349,7 +359,7 @@ class Mainmenu(Frame):
 
         payment_button = Button(total_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                 bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
-                                command=self.show_order)
+                                command=self.show_delivery_info_window)
         payment_button.pack(side=RIGHT, padx=10, pady=5)
 
     def remove_item(self, idx):
@@ -362,11 +372,42 @@ class Mainmenu(Frame):
     def tong(self):
         return sum([float(product[4].replace("₫", "").replace(".", "")) for product in self.cart_list])
 
-    def show_bill(self):
+    def show_delivery_info_window(self):
+        self.delivery_window = Toplevel(self)
+        self.delivery_window.title("Delivery Information")
+        self.delivery_window.geometry("300x210")
+        self.delivery_window.resizable(width=False, height=False)
+        # Create a frame to hold the labels and entry fields
+        frame = Frame(self.delivery_window, bd=2, relief="solid")
+        frame.pack(padx=10, pady=5)
+
+        # Create labels and entry fields for entering delivery information
+        labels = ["Name:", "Phone:", "Email:", "Address:"]
+        self.entries = []
+
+        for i, label_text in enumerate(labels):
+            label = Label(frame, text=label_text, font=("Comic Sans MS", 12, BOLD))
+            entry = Entry(frame, bd=2, relief=SOLID)
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+            entry.grid(row=i, column=1, padx=5, pady=5)
+            self.entries.append(entry)
+
+        # Create the "Save" button
+        save_button = Button(self.delivery_window, bd=1, text="Save", bg="green", fg="white", activebackground="green",
+                             activeforeground="white", font=("Comic Sans MS", 12, BOLD), command=self.show_order)
+        save_button.pack(pady=5, padx=30)
+
+    def confirm_order(self, name, phone, email, address):
+        messagebox.showinfo("Order Confirmation", "Your order has been confirmed")
+        self.delivery_window.destroy()
+        self.bill_window.destroy()
+        self.show_bill(name, phone, email, address)
+
+    def show_bill(self, name, phone, email, address):
         product_counts = Counter(product[0] for product in self.cart_list)
         receipt = f"{'-' * 50}\n{'PAYMENT RECEIPT':^50}\n{'Time: '}{datetime.now():%d-%m-%Y %H:%M:%S}\n{'-' * 50}"
-        total_amount = 0  # Initialize the total amount variable
 
+        total_amount = 0  # Initialize the total amount variable
         unique_product_ids = set(product[0] for product in self.cart_list)  # Get unique product IDs
 
         row = 0
@@ -382,9 +423,17 @@ class Mainmenu(Frame):
                 receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
                 row += 1
 
+        receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}"
+
         receipt += "\nTotal: {:,.0f}₫".format(float(total_amount)).replace(",", ".")
         messagebox.showinfo("Order Confirmed", receipt)
         self.cart_list.clear()
+
+        # Ghi lại danh sách đã được cập nhật vào file CSV
+        with open("Products.csv", "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerows(self.products)
+
         self.bill_window.destroy()
         self.show_cart()
 
@@ -406,7 +455,7 @@ class Mainmenu(Frame):
             line_label = Label(self.bill_window, text="-" * 80, font=("Comic Sans MS", 12, BOLD))
             line_label.grid(row=3, column=0, columnspan=5, padx=10, pady=5)
             # Create the table headers
-            headers = ["Code", "Product", "Quantity", "Price", "Total"]
+            headers = ["ID", "Product", "Quantity", "Price", "Total"]
             for col, header in enumerate(headers):
                 header_label = Label(self.bill_window, text=header, font=("Comic Sans MS", 12, BOLD))
                 header_label.grid(row=4, column=col, padx=10, pady=5)
@@ -472,7 +521,8 @@ class Mainmenu(Frame):
             total_label.grid(row=row, column=0, columnspan=2, padx=10, pady=10)
             # Add Confirm button
             confirm_button = Button(self.bill_window, text="Confirm", font=("Comic Sans MS", 12, BOLD), relief=SOLID,
-                                    activeforeground="white", activebackground="green", command=self.show_bill)
+                                    activeforeground="white", activebackground="green",
+                                    command=lambda: self.confirm_order(*[en_try.get() for en_try in self.entries]))
             confirm_button.grid(row=row, column=4, sticky=E, padx=80, pady=5)
             # Add Cancel button
             cancel_button = Button(self.bill_window, text="Cancel", font=("Comic Sans MS", 12, BOLD), relief=SOLID,
@@ -627,7 +677,7 @@ class Admin:
     def change_price(self, product_info):
         self.change_price_screen = Toplevel(self.change_info_screen)
         self.change_price_screen.title("Price")
-        self.change_price_screen.geometry("250x150")
+        self.change_price_screen.geometry("250x160")
         self.change_price_screen.resizable(width=False, height=False)
         self.new_price = StringVar()
         Label(self.change_price_screen, text="New Price", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
@@ -637,14 +687,19 @@ class Admin:
                activebackground="green", activeforeground="#F6F5EC", command=lambda: self.confirm_change_price(product_info, self.new_price.get())).pack(pady=10)
 
     def confirm_change_price(self, product_info, new_price):
+        self.new_price_entry.delete(0, END)
         try:
             if float(new_price) < 0:
-                messagebox.showerror("Invalid Price", "Please enter a valid price")
+                self.change_price_screen.config(Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
             else:
                 formatted_price = "{:,.0f}₫".format(float(new_price)).replace(",", ".")
                 product_info[4] = formatted_price
+                self.change_price_screen.destroy()
+                self.change_info_screen.destroy()
+                messagebox.showinfo("Success", "Your changes have been saved")
+                self.ShowFrames(product_info[1])
         except ValueError:
-            messagebox.showerror("Invalid Price", "Please enter a valid price")
+            self.change_price_screen.config(Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
 
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
@@ -662,15 +717,10 @@ class Admin:
             writer = csv.writer(file)
             writer.writerows(data)
 
-        self.change_price_screen.destroy()
-        self.change_info_screen.destroy()
-        self.change_info(product_info)
-        self.ShowFrames(product_info[1])
-
     def change_quantity(self, product_info):
         self.change_quantity_screen = Toplevel(self.change_info_screen)
         self.change_quantity_screen.title("Quantity")
-        self.change_quantity_screen.geometry("250x150")
+        self.change_quantity_screen.geometry("250x160")
         self.change_quantity_screen.resizable(width=False, height=False)
         self.new_quantity = StringVar()
         Label(self.change_quantity_screen, text="New Quantity", font=("Comic Sans MS", 12, "bold")).pack(pady=5)
@@ -681,16 +731,21 @@ class Admin:
                command=lambda: self.confirm_change_quantity(product_info, self.new_quantity.get())).pack(pady=10)
 
     def confirm_change_quantity(self, product_info, new_quantity):
+        self.new_quantity_entry.delete(0, END)
         try:
             if int(new_quantity) < 0:
-                messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
+                self.change_quantity_screen.config(Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
             else:
                 if 0 < int(new_quantity) <= 9:
                     product_info[6] = "0" + new_quantity
                 else:
                     product_info[6] = new_quantity
+                self.change_quantity_screen.destroy()
+                self.change_info_screen.destroy()
+                messagebox.showinfo("Success", "Your changes have been saved")
+                self.ShowFrames(product_info[1])
         except ValueError:
-            messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
+            self.change_quantity_screen.config(Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
 
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
@@ -707,11 +762,6 @@ class Admin:
         with open("Products.csv", "w", newline="", encoding="UTF-8") as file:
             writer = csv.writer(file)
             writer.writerows(data)
-
-        self.change_quantity_screen.destroy()
-        self.change_info_screen.destroy()
-        self.change_info(product_info)
-        self.ShowFrames(product_info[1])
 
     def add_product(self):
         pass
