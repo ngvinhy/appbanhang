@@ -417,7 +417,8 @@ class Mainmenu(Frame):
             quantity = int(quantity)
         for i in range(quantity):
             self.cart_list.remove(item)
-        item[6] = str("{:02d}".format(int(item[6]) + int(quantity)))
+        for product in self.products:
+            product[6] = str("{:02d}".format(int(item[6]) + int(quantity)))
         messagebox.showinfo("Success", "Products remove from cart successfully!")
         cart_item.destroy()
         self.show_cart()  # Load lại giao diện cart
