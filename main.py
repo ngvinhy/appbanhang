@@ -30,7 +30,7 @@ class MainAccountScreen:
 
         tk.Button(login_frame, text="Register", height="2", width="15", command=self.register, font=("Comic Sans MS", 10, "bold")).place(x=360, y=320)
 
-        tk.Button(login_frame, text="Admin", height="1", width="7", command=self.admin, font=("Comic Sans MS", 10, "bold")).place(x=775, y=10)
+        tk.Button(login_frame, text="Admin", height="1", width="7", command=self.admin_login, font=("Comic Sans MS", 10, "bold")).place(x=775, y=10)
 
         self.root.mainloop()
 
@@ -75,7 +75,6 @@ class MainAccountScreen:
         password_info = self.password.get()
 
         file = open(username_info, "w")
-        file.write(username_info + "\n")
         file.write(password_info)
         file.close()
         messagebox.showinfo("Account", "Registration Success!")
@@ -111,9 +110,51 @@ class MainAccountScreen:
         self.login()
         Label(self.login_screen, text="User Not Found!", fg="red").pack(pady=5)
 
-    def admin(self):
-        self.root.destroy()
-        Admin()
+    def admin_login(self):
+        self.admin_login_screen = Toplevel(self.root)
+        self.admin_login_screen.title("Admin Login")
+        self.admin_login_screen.geometry("300x250")
+        self.admin_login_screen.resizable(width=False, height=False)
+        Label(self.admin_login_screen, text="Please enter details below to login").pack(pady=5)
+
+        self.admin_username_verify = StringVar()
+        self.admin_password_verify = StringVar()
+
+        Label(self.admin_login_screen, text="Username").pack(pady=5)
+        self.admin_username_login_entry = Entry(self.admin_login_screen, textvariable=self.admin_username_verify)
+        self.admin_username_login_entry.pack(pady=5)
+        Label(self.admin_login_screen, text="Password").pack(pady=5)
+        self.admin_password_login_entry = Entry(self.admin_login_screen, textvariable=self.admin_password_verify, show='*')
+        self.admin_password_login_entry.pack(pady=5)
+        Button(self.admin_login_screen, text="Login", width=10, height=1, command=self.admin_login_verify).pack(pady=5)
+
+    def admin_login_verify(self):
+        username1 = self.admin_username_verify.get()
+        password1 = self.admin_password_verify.get()
+        self.admin_username_login_entry.delete(0, END)
+        self.admin_password_login_entry.delete(0, END)
+        if username1 == "admin":
+            file = open("admin", "r")
+            verify = file.read().splitlines()
+            if password1 in verify:
+                self.admin_login_screen.destroy()
+                messagebox.showinfo("Account", "Login Success!")
+                self.root.destroy()
+                Admin()
+            else:
+                self.admin_password_not_recognised()
+        else:
+            self.admin_user_not_found()
+
+    def admin_password_not_recognised(self):
+        self.admin_login_screen.destroy()
+        self.admin_login()
+        Label(self.admin_login_screen, text="Invalid Password!", fg="red").pack(pady=5)
+
+    def admin_user_not_found(self):
+        self.admin_login_screen.destroy()
+        self.admin_login()
+        Label(self.admin_login_screen, text="User Not Found!", fg="red").pack(pady=5)
 
 
 class Product:
