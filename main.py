@@ -5,7 +5,7 @@ from xulyanh import *
 from tkinter import *
 import os
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from collections import Counter
 
 
@@ -77,7 +77,7 @@ class MainAccountScreen:
         file.write(username_info + "\n")
         file.write(password_info)
         file.close()
-        messagebox.showinfo("Account", "Registration Success")
+        messagebox.showinfo("Account", "Registration Success!")
         self.register_screen.destroy()
 
     def login_verify(self):
@@ -92,7 +92,7 @@ class MainAccountScreen:
             verify = file1.read().splitlines()
             if password1 in verify:
                 self.login_screen.destroy()
-                messagebox.showinfo("Account", "Login Success")
+                messagebox.showinfo("Account", "Login Success!")
                 self.root.destroy()
                 main()
             else:
@@ -103,12 +103,12 @@ class MainAccountScreen:
     def password_not_recognised(self):
         self.login_screen.destroy()
         self.login()
-        Label(self.login_screen, text="Invalid Password", fg="red").pack(pady=5)
+        Label(self.login_screen, text="Invalid Password!", fg="red").pack(pady=5)
 
     def user_not_found(self):
         self.login_screen.destroy()
         self.login()
-        Label(self.login_screen, text="User Not Found", fg="red").pack(pady=5)
+        Label(self.login_screen, text="User Not Found!", fg="red").pack(pady=5)
 
     def admin(self):
         self.root.destroy()
@@ -130,11 +130,6 @@ class Product:
             reader = csv.reader(file)
             data = [row for row in reader]
         return data
-
-    def append_data(self):
-        with open("Products.csv", "a", newline="", encoding="UTF-8") as file:
-            writer = csv.writer(file)
-            writer.writerow([self.name, self.price, self.image, self.description, self.type, self.code])
 
 
 class Mainmenu(Frame):
@@ -208,38 +203,6 @@ class Mainmenu(Frame):
                bg="#252d35", relief=FLAT, activebackground="#252d35", activeforeground="#F6F5EC",
                command=lambda: self.ShowFrames("Others")).grid(row=8, column=0, padx=10)
 
-    def buy_product(self, product, quantity, phanloai):
-        if quantity.strip() == "":
-            self.cart_list.append(product)
-            messagebox.showinfo("Success", "Product added to cart successfully")
-            self.update_quantity_temporary(product, 1, phanloai)
-        else:
-            try:
-                quantity = int(quantity)
-                if 0 < quantity <= int(product[6]):
-                    for i in range(quantity):
-                        self.cart_list.append(product)
-                    messagebox.showinfo("Success", "Product added to cart successfully")
-                    self.update_quantity_temporary(product, quantity, phanloai)
-                elif quantity <= 0:
-                    messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
-                else:
-                    messagebox.showerror("Invalid Quantity", "The quantity exceeds the available stock")
-            except ValueError:
-                messagebox.showerror("Invalid Quantity", "Please enter a valid quantity")
-
-    def update_quantity_temporary(self, product, quantity, phanloai):  # Hiển thị số lượng tạm thời trên giao diện
-        for i in range(len(self.products)):
-            if self.products[i][0] == product[0]:
-                current_quantity = int(self.products[i][6])
-                new_quantity = current_quantity - quantity
-                if 0 < int(new_quantity) <= 9:
-                    self.products[i][6] = "0" + str(new_quantity)
-                else:
-                    self.products[i][6] = str(new_quantity)
-                break
-        self.ShowFrames(phanloai)
-
     def HideAllFrame(self):
         for widget in self.products_frame.winfo_children():
             widget.destroy()
@@ -280,10 +243,11 @@ class Mainmenu(Frame):
                 if int(product[6]) > 0:
                     Label(lf, text="Quantity: " + product[6], font=("Comic Sans MS", 12, "bold"), fg="white",
                           bg="#252d35").grid(row=4, column=0, padx=85, pady=5)
-                    quantity_entry = Entry(lf, font=("Comic Sans MS", 12, "bold"), width=2)
+                    quantity_entry = ttk.Combobox(lf, values=list(range(1, int(product[6]) + 1)), state="readonly", font=("Comic Sans MS", 12, BOLD))
+                    quantity_entry.configure(width=2, height=5)
                     quantity_entry.grid(row=5, column=0, padx=(65, 5), pady=5, sticky="w")
                     self.quantity_entries.append(quantity_entry)
-                    Button(lf, command=lambda p=product, q=quantity_entry, pl=phanloai: self.buy_product(p, q.get(), pl),
+                    Button(lf, command=lambda p=product, q=quantity_entry: self.update_quantity_temporary(p, q.get()),
                            text="Add to Cart", font=("Comic Sans MS", 12, "bold"), fg="white", bg="green", relief=SOLID,
                            activebackground="green", activeforeground="white").grid(row=5, column=0, padx=85, pady=5)
                 else:
@@ -296,6 +260,17 @@ class Mainmenu(Frame):
         # Cập nhật thanh cuộn khi có thay đổi
         canvas.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
+
+    def update_quantity_temporary(self, product, quantity):  # Hiển thị số lượng tạm thời trên giao diện
+        messagebox.showinfo("Success", "Product added to cart successfully!")
+        for i in range(int(quantity.strip())):
+            self.cart_list.append(product)
+        new_quantity = int(product[6]) - int(quantity.strip())
+        if 0 < int(new_quantity) <= 9:
+            product[6] = "0" + str(new_quantity)
+        else:
+            product[6] = str(new_quantity)
+        self.ShowFrames(product[1])
 
     def show_cart(self):
         self.HideAllFrame()
@@ -398,7 +373,7 @@ class Mainmenu(Frame):
         save_button.pack(pady=5, padx=30)
 
     def confirm_order(self, name, phone, email, address):
-        messagebox.showinfo("Order Confirmation", "Your order has been confirmed")
+        messagebox.showinfo("Order Confirmation", "Your order has been confirmed!")
         self.delivery_window.destroy()
         self.bill_window.destroy()
         self.show_bill(name, phone, email, address)
@@ -426,7 +401,7 @@ class Mainmenu(Frame):
         receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}"
 
         receipt += "\nTotal: {:,.0f}₫".format(float(total_amount)).replace(",", ".")
-        messagebox.showinfo("Order Confirmed", receipt)
+        messagebox.showinfo("Order Confirmed!", receipt)
         self.cart_list.clear()
 
         # Ghi lại danh sách đã được cập nhật vào file CSV
@@ -529,7 +504,7 @@ class Mainmenu(Frame):
                                    activeforeground="white", activebackground="red", command=self.bill_window.destroy)
             cancel_button.grid(row=row, column=4, sticky=E, padx=5, pady=5)
         else:
-            messagebox.showinfo("Cart", "There are no products in the cart")
+            messagebox.showinfo("Cart", "There are no products in the cart!")
 
 
 class Admin:
@@ -696,7 +671,7 @@ class Admin:
                 product_info[4] = formatted_price
                 self.change_price_screen.destroy()
                 self.change_info_screen.destroy()
-                messagebox.showinfo("Success", "Your changes have been saved")
+                messagebox.showinfo("Success", "Your changes have been saved!")
                 self.ShowFrames(product_info[1])
         except ValueError:
             self.change_price_screen.config(Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
@@ -742,7 +717,7 @@ class Admin:
                     product_info[6] = new_quantity
                 self.change_quantity_screen.destroy()
                 self.change_info_screen.destroy()
-                messagebox.showinfo("Success", "Your changes have been saved")
+                messagebox.showinfo("Success", "Your changes have been saved!")
                 self.ShowFrames(product_info[1])
         except ValueError:
             self.change_quantity_screen.config(Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5))
@@ -764,7 +739,70 @@ class Admin:
             writer.writerows(data)
 
     def add_product(self):
-        pass
+        self.add_product_screen = Toplevel(self.root)
+        self.add_product_screen.title("Delivery Information")
+        self.add_product_screen.geometry("400x300")
+        self.add_product_screen.resizable(width=False, height=False)
+
+        # Create a frame to hold the labels and entry fields
+        frame = Frame(self.add_product_screen, bd=2, relief="solid")
+        frame.pack(padx=10, pady=5)
+
+        # Create labels and entry fields for entering delivery information
+        labels = ["Product Category:", "Manufacturer:", "Product Name:", "Price:", "Image:",
+                  "Quantity:"]
+        self.entries = []
+
+        for i, label_text in enumerate(labels):
+            label = Label(frame, text=label_text, font=("Comic Sans MS", 12, "bold"))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            if label_text == "Product Category:":
+                entry = ttk.Combobox(frame, values=["Laptop", "PC", "Apple", "Screen", "Keyboard", "Mouse", "Headphones",
+                                                    "Accessories", "Others"], state="readonly", font=("Comic Sans MS", 12, BOLD))
+                entry.configure(width=10, height=5)
+            else:
+                entry = Entry(frame, bd=2, relief=SOLID)
+
+            entry.grid(row=i, column=1, padx=5, pady=5)
+            self.entries.append(entry)
+
+        # Create the "Save" button
+        save_button = Button(self.add_product_screen, bd=1, text="Save", bg="green", fg="white", activebackground="green",
+                             activeforeground="white", font=("Comic Sans MS", 12, "bold"), command=self.save_product)
+        save_button.pack(pady=5, padx=30)
+
+    def save_product(self):
+        # Get the entered values from the entry fields
+        product_category = self.entries[0].get().strip()
+        manufacturer = self.entries[1].get().strip()
+        product_name = self.entries[2].get().strip()
+        price = "{:,.0f}₫".format(float(self.entries[3].get().strip())).replace(",", ".")
+        image = self.entries[4].get().strip()
+        quantity = self.entries[5].get().strip()
+
+        products = []
+        for product in self.products:
+            if product_category == product[1]:
+                products.append(product)
+        product_id = [pr[0] for pr in products]
+        if product_id:
+            max_code = max([int(p[1:]) for p in product_id if p[1:].isdigit()])
+            product_code = product_category[:1] + "{:02d}".format(max_code + 1)  # Định dạng số thành chuỗi nếu max_code = 3 thì product_code = 04
+        else:
+            product_code = product_category[:1] + "01"
+        # Create the product data as a list
+        product_data = [product_code, product_category, manufacturer, product_name, price, image, quantity]
+        # Write the product data to the CSV file
+        with open("Products.csv", "a", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow(product_data)
+        # Close the delivery window
+        self.add_product_screen.destroy()
+        # Optionally, you can display a message or perform any other actions after saving the product
+        messagebox.showinfo("Success", "Product added successfully!\nPlease login again to update!")
+        self.root.destroy()
+        MainAccountScreen()
 
 
 def main():
