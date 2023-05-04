@@ -840,7 +840,7 @@ class Admin:
             label = Label(frame, text=label_text, font=("Comic Sans MS", 12, "bold"))
             label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
 
-            if label_text == "Product Category:":
+            if label_text == "Category:":
                 entry = ttk.Combobox(frame, values=["Laptop", "PC", "Apple", "Screen", "Keyboard", "Mouse", "Headphones",
                                                     "Accessories", "Others"], state="readonly", font=("Comic Sans MS", 12, BOLD))
                 entry.configure(width=10, height=5)
