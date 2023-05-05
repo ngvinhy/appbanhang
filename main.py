@@ -681,7 +681,6 @@ class Admin:
         canvas.create_window((0, 0), window=frame, anchor="nw")
 
         self.image_products = []
-        self.button_add = []  # Khởi tạo danh sách mới cho button_add
         count = 0
         for product in self.products:
             if product[1] == phanloai:
@@ -703,7 +702,10 @@ class Admin:
                                     font=("Comic Sans MS", 12, "bold"), fg="white", bg="green", relief=SOLID,
                                     activebackground="green", activeforeground="white")
                 button_add.grid(row=5, column=0, padx=85, pady=5)
-                self.button_add.append(button_add)
+                button_remove = Button(lf, command=lambda p=product: self.remove_product(p), text="Remove",
+                                       font=("Comic Sans MS", 12, "bold"), fg="white", bg="red", relief=SOLID,
+                                       activebackground="red", activeforeground="white")
+                button_remove.grid(row=5, column=0, padx=(5, 10), pady=5, sticky="e")
                 count += 1
             else:
                 continue
@@ -881,12 +883,43 @@ class Admin:
         with open("Products.csv", "a", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerow(product_data)
-        # Close the delivery window
         self.add_product_screen.destroy()
-        # Optionally, you can display a message or perform any other actions after saving the product
-        messagebox.showinfo("Success", "Product added successfully!\nPlease login again to update!")
+        messagebox.showinfo("Success", "Product added successfully!")
         self.root.destroy()
-        MainAccountScreen()
+        Admin()
+
+    def remove_product(self, product):
+        self.remove_product_screen = Toplevel(self.root)
+        self.remove_product_screen.title("Remove Product")
+        self.remove_product_screen.geometry("235x150")
+        self.remove_product_screen.resizable(width=False, height=False)
+        Label(self.remove_product_screen, text="Are You Sure?", font=("Comic Sans MS", 12, "bold")).grid(row=0, column=0, padx=60, pady=10)
+        Button(self.remove_product_screen, text="Confirm", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
+               activebackground="green", activeforeground="#F6F5EC",
+               command=lambda: self.confirm_remove_product(product)).grid(row=1, column=0, padx=(10, 90), pady=5)
+        Button(self.remove_product_screen, text="Cancel", font=("Comic Sans MS", 12, "bold"), relief=SOLID,
+               activebackground="red", activeforeground="#F6F5EC",
+               command=self.remove_product_screen.destroy).grid(row=1, column=0, padx=(90, 10), pady=5)
+
+    def confirm_remove_product(self, product):
+        # Đọc toàn bộ nội dung của file CSV vào một danh sách
+        with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
+            reader = csv.reader(file)
+            data = list(reader)
+        # Tìm vị trí của sản phẩm cần thay đổi trong danh sách và thay đổi giá trị của nó
+        for i, row in enumerate(data):
+            if row[0] == product[0]:
+                data.pop(i)
+                break
+        # Ghi lại danh sách đã được cập nhật vào file CSV
+        with open("Products.csv", "w", newline="", encoding="UTF-8") as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+
+        self.remove_product_screen.destroy()
+        messagebox.showinfo("Success", "Product removed successfully!")
+        self.root.destroy()
+        Admin()
 
 
 def main():
