@@ -12,8 +12,8 @@ L11,Laptop,Lenovo,IdeaPad Gaming 3,21.490.000₫,https://ik.imagekit.io/eeca1glx
 L12,Laptop,Lenovo,Legion 5,29.999.000₫,https://ik.imagekit.io/eeca1glx6/9692_lenovo_legion_5_15ach6h_82jw00kjvn_3.jpg?updatedAt=1683044598649,05
 L13,Laptop,MSI,Crosshair 17,35.990.000₫,https://ik.imagekit.io/eeca1glx6/65027_laptop_msi_gaming_crosshair_17_4.jpg?updatedAt=1683045361979,07
 L14,Laptop,Asus,TUF A15,34.990.000₫,https://ik.imagekit.io/eeca1glx6/t%E1%BA%A3i_xu%E1%BB%91ng__22_.jpg?updatedAt=1683045391100,10
-P01,PC,THS,MINION i1650,11.790.000₫,https://ik.imagekit.io/eeca1glx6/maxresdefault.jpg?updatedAt=1683045432889,11
-P02,PC,THS,VIPER i3050,22.000.000₫,https://ik.imagekit.io/eeca1glx6/maxresdefault__1_.jpg?updatedAt=1683045461534,10
+P01,PC,THS,MINION i1650,11.790.000₫,https://ik.imagekit.io/eeca1glx6/maxresdefault.jpg?updatedAt=1683045432889,10
+P02,PC,THS,VIPER i3050,22.000.000₫,https://ik.imagekit.io/eeca1glx6/maxresdefault__1_.jpg?updatedAt=1683045461534,09
 P03,PC,THS,VIPER Plus i3060,33.000.000₫,https://ik.imagekit.io/eeca1glx6/maxresdefault__2_.jpg?updatedAt=1683045502790,05
 P04,PC,THS,VIPER Plus i3070Ti,38.000.000₫,https://ik.imagekit.io/eeca1glx6/maxresdefault__3_.jpg?updatedAt=1683045529766,05
 P05,PC,THS,PHANTOM Plus i4070Ti,65.000.000₫,https://ik.imagekit.io/eeca1glx6/t%E1%BA%A3i_xu%E1%BB%91ng__23_.jpg?updatedAt=1683045565532,15
@@ -30,7 +30,7 @@ A03,Apple,Apple,Mac Mini M1 MGNR3SA/A,16.890.000₫,https://ik.imagekit.io/eeca1
 A04,Apple,Apple,AirPods 2 VN/A,3.290.000₫,https://ik.imagekit.io/eeca1glx6/42f4410cad6c8c13eb1cdd95080f971e_1565747172.jpg.jpg?updatedAt=1683045936359,20
 A05,Apple,Apple,Apple Magic Trackpad 2 - Silver,2.990.000₫,https://ik.imagekit.io/nhom2/Apple_Magic_Trackpad_2_-_Silver.png?updatedAt=1683042809373,05
 A06,Apple,Apple,Apple Magic Keyboard,2.590.000₫,https://ik.imagekit.io/nhom2/Apple_Magic_Keyboard.png?updatedAt=1683043599942,05
-S01,Screen,LG,"24GN65R-B 24"" IPS 144Hz",4.190.000₫,https://ik.imagekit.io/nhom2/24GN65R-B.png?updatedAt=1683043599638,07
+S01,Screen,LG,"24GN65R-B 24"" IPS 144Hz",4.190.000₫,https://ik.imagekit.io/nhom2/24GN65R-B.png?updatedAt=1683043599638,06
 S02,Screen,LG,"32UN880-B 32"" IPS 4K HDR 10",16.990.000₫,https://ik.imagekit.io/nhom2/32UN880-B.png?updatedAt=1683043600500,02
 S03,Screen,Samsung,"LF24T370 24"" IPS 75Hz",3.090.000₫,https://ik.imagekit.io/nhom2/LF24T370.png?updatedAt=1683043606426,10
 S04,Screen,Samsung,"M7 LS43BM702 43"" 4K USBC",12.990.000₫,https://ik.imagekit.io/nhom2/M7_LS43BM702.png?updatedAt=1683043606983,05
@@ -43,8 +43,8 @@ K06,Keyboard,Akko,AKKO 5075B Plus Naruto,2.990.000₫,https://ik.imagekit.io/nho
 K07,Keyboard,Akko,AKKO 3098S One Piece,2.590.000₫,https://ik.imagekit.io/nhom2/AKKO_3098S_One_Piece.png?updatedAt=1683043600173,08
 K08,Keyboard,DareU,DareU EK1280 RGB,750.000₫,https://ik.imagekit.io/nhom2/DareU_EK1280_RGB.png?updatedAt=1683043600106,10
 K09,Keyboard,DareU,DAREU EK87,499.000₫,https://ik.imagekit.io/nhom2/DAREU_EK87.png?updatedAt=1683043600349,09
-M01,Mouse,Logitech,G102 Lightsync RGB,420.000₫,https://ik.imagekit.io/nhom2/G102_Lightsync_RGB.png?updatedAt=1683043602440,15
-M02,Mouse,Logitech,G502 Hero,990.000₫,https://ik.imagekit.io/nhom2/G502_Hero.png?updatedAt=1683043603568,05
+M01,Mouse,Logitech,G102 Lightsync RGB,420.000₫,https://ik.imagekit.io/nhom2/G102_Lightsync_RGB.png?updatedAt=1683043602440,14
+M02,Mouse,Logitech,G502 Hero,990.000₫,https://ik.imagekit.io/nhom2/G502_Hero.png?updatedAt=1683043603568,04
 M03,Mouse,Zowie,EC3-C,1.590.000₫,https://ik.imagekit.io/nhom2/EC3-C.png?updatedAt=1683043600042,03
 M04,Mouse,Rapoo,VT350S Black,1.190.000₫,https://ik.imagekit.io/nhom2/VT350S_Black.png?updatedAt=1683043606944,05
 M05,Mouse,Rapoo,V300W Black,790.000₫,https://ik.imagekit.io/nhom2/V300W_Black.png?updatedAt=1683043607035,07
@@ -56,5 +56,5 @@ H05,Headphones,Razer,BlackShark V2 X White,1.190.000₫,https://ik.imagekit.io/n
 A01,Accessories,AverMedia,Capture Card Live Gamer,5.490.000₫,https://ik.imagekit.io/nhom2/Capture_Card_Live_Gamer.png?updatedAt=1683043600221,03
 A02,Accessories,Creative,Soundcard Blaster Audigy FX,710.000₫,https://ik.imagekit.io/nhom2/Soundcard_Blaster_Audigy_FX.png?updatedAt=1683043606982,08
 A03,Accessories,HyperX,Micro DuoCast RGB,1.990.000₫,https://ik.imagekit.io/nhom2/Micro_DuoCast_RGB.png?updatedAt=1683043607291,07
-O01,Others,Linksys,Wifi Router EA7500,2.490.000₫,https://ik.imagekit.io/nhom2/Wifi_Router_EA7500.png?updatedAt=1683043607173,02
+O01,Others,Linksys,Wifi Router EA7500,2.490.000₫,https://ik.imagekit.io/nhom2/Wifi_Router_EA7500.png?updatedAt=1683043607173,01
 O02,Others,TP-Link,WiFi Card 5 T5E,790.000₫,https://ik.imagekit.io/nhom2/WiFi_Card_5_T5E.png?updatedAt=1683043607415,10

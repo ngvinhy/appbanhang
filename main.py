@@ -406,7 +406,7 @@ class Mainmenu(Frame):
 
         payment_button = Button(total_frame, text="Payment", font=("Comic Sans MS", 12, BOLD), fg="#F6F5EC",
                                 bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
-                                command=self.show_order)
+                                command=self.show_delivery_info_window)
         payment_button.pack(side=RIGHT, padx=10, pady=5)
 
     def remove_item(self, item, quantity_entry, cart_item):
@@ -464,6 +464,8 @@ class Mainmenu(Frame):
         total_amount = 0  # Initialize the total amount variable
         unique_product_ids = set(product[0] for product in self.cart_list)  # Get unique product IDs
 
+        receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}\n{'-' * 30:^50}\n{'YOUR ORDER':^50}"
+
         row = 0
         for product_id in unique_product_ids:
             product_details = next((p for p in self.products if p[0] == product_id), None)
@@ -476,8 +478,6 @@ class Mainmenu(Frame):
                 total_amount += total_price  # Update the total amount
                 receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
                 row += 1
-
-        receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}"
 
         receipt += "\nTotal: {:,.0f}₫".format(float(total_amount)).replace(",", ".")
         messagebox.showinfo("Order Confirmed!", receipt)
