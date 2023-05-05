@@ -611,8 +611,8 @@ class Admin:
 
         Label(self.heading, image=self.image_logo).grid(row=0, column=0, padx=10, pady=5)
 
-        Label(self.heading, text="Products Management", font=("Comic Sans MS", 16, BOLD), fg="white",
-              bg="#080a0d").grid(row=0, column=2, padx=345, pady=5)
+        Label(self.heading, text="PRODUCTS MANAGEMENT", font=("Comic Sans MS", 16, BOLD), fg="white",
+              bg="#080a0d").grid(row=0, column=2, padx=320, pady=5)
 
         Button(self.heading, text="Add Product", font=("Comic Sans MS", 12, "bold"), fg="#F6F5EC",
                bg="green", relief=SOLID, activebackground="green", activeforeground="#F6F5EC",
