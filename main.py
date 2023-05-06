@@ -431,11 +431,10 @@ class Mainmenu(Frame):
         self.delivery_window.title("Delivery Information")
         self.delivery_window.geometry("300x210")
         self.delivery_window.resizable(width=False, height=False)
-        # Create a frame to hold the labels and entry fields
+
         frame = Frame(self.delivery_window, bd=2, relief="solid")
         frame.pack(padx=10, pady=5)
 
-        # Create labels and entry fields for entering delivery information
         labels = ["Name:", "Phone:", "Email:", "Address:"]
         self.entries = []
 
@@ -446,77 +445,34 @@ class Mainmenu(Frame):
             entry.grid(row=i, column=1, padx=5, pady=5)
             self.entries.append(entry)
 
-        # Create the "Save" button
         save_button = Button(self.delivery_window, bd=1, text="Save", bg="green", fg="white", activebackground="green",
                              activeforeground="white", font=("Comic Sans MS", 12, BOLD), command=self.show_order)
         save_button.pack(pady=5, padx=30)
-
-    def confirm_order(self, name, phone, email, address):
-        messagebox.showinfo("Order Confirmation", "Your order has been confirmed!")
-        self.delivery_window.destroy()
-        self.bill_window.destroy()
-        self.show_bill(name, phone, email, address)
-
-    def show_bill(self, name, phone, email, address):
-        product_counts = Counter(product[0] for product in self.cart_list)
-        receipt = f"{'-' * 50}\n{'PAYMENT RECEIPT':^50}\n{'Time: '}{datetime.now():%d-%m-%Y %H:%M:%S}\n{'-' * 50}"
-
-        total_amount = 0  # Initialize the total amount variable
-        unique_product_ids = set(product[0] for product in self.cart_list)  # Get unique product IDs
-
-        receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}\n{'-' * 30:^50}\n{'YOUR ORDER':^50}"
-
-        row = 0
-        for product_id in unique_product_ids:
-            product_details = next((p for p in self.products if p[0] == product_id), None)
-            if product_details:
-                product_code = product_details[0]
-                product_name = product_details[2] + " " + product_details[3]
-                product_price = product_details[4]
-                quantity = product_counts[product_id]
-                total_price = float(product_price.replace("₫", "").replace(".", "")) * quantity
-                total_amount += total_price  # Update the total amount
-                receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
-                row += 1
-
-        receipt += "\nTotal: {:,.0f}₫".format(float(total_amount)).replace(",", ".")
-        messagebox.showinfo("Order Confirmed!", receipt)
-        self.cart_list.clear()
-
-        # Ghi lại danh sách đã được cập nhật vào file CSV
-        with open("Products.csv", "w", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            writer.writerows(self.products)
-
-        self.bill_window.destroy()
-        self.show_cart()
 
     def show_order(self):
         if len(self.cart_list) != 0:
             self.bill_window = Toplevel(self.master)
             self.bill_window.title("Order")
-            # Add label for "Payment Receipt"
+
             receipt_label = Label(self.bill_window, text="Order Confirmation", font=("Comic Sans MS", 15, BOLD))
             receipt_label.grid(row=0, column=0, columnspan=5, padx=10, pady=5)
-            # Add label for "Tech Hub"
+
             title_label = Label(self.bill_window, text="Products of Tech Hub Shop", font=("Comic Sans MS", 13, BOLD))
             title_label.grid(row=1, column=0, columnspan=5, padx=10, pady=3)
-            # Add label for current date and time
+
             current_time = datetime.now().strftime("%d-%m-%Y %H:%M")
             time_label = Label(self.bill_window, text=current_time, font=("Comic Sans MS", 12, BOLD))
             time_label.grid(row=2, column=0, columnspan=5, padx=10, pady=5)
-            # Add dashed line separator
+
             line_label = Label(self.bill_window, text="-" * 80, font=("Comic Sans MS", 12, BOLD))
             line_label.grid(row=3, column=0, columnspan=5, padx=10, pady=5)
-            # Create the table headers
+
             headers = ["ID", "Product", "Quantity", "Price", "Total"]
             for col, header in enumerate(headers):
                 header_label = Label(self.bill_window, text=header, font=("Comic Sans MS", 12, BOLD))
                 header_label.grid(row=4, column=col, padx=10, pady=5)
-            # Create the bill details
-            row = 5  # Initialize the row variable
-            total_amount = 0  # Initialize the total amount variable
-            # Create lists to store the labels
+            row = 5  # Khởi tạo biến chỉ thứ tự hàng
+            total_amount = 0  # Khởi tạo biến tổng tiền
             code_labels = []
             name_labels = []
             quantity_labels = []
@@ -529,18 +485,18 @@ class Mainmenu(Frame):
                     product_code = product_details[0]
                     product_name = product_details[2] + " " + product_details[3]
                     product_price = product_details[4]
-                    # Check if the code already exists in the labels
+                    # Kiểm tra ID sản phẩm có trong list chưa
                     existing_index = next((i for i, code in enumerate(code_labels) if code['text'] == product_code), None)
 
                     if existing_index is not None:
-                        # If the code already exists, update the quantity and total
+                        # Nếu ID sản phẩm đã có thì cập nhật số lượng và tổng tiền của sản phẩm đó
                         existing_quantity = int(quantity_labels[existing_index]['text'])
                         new_quantity = existing_quantity + 1
                         quantity_labels[existing_index].configure(text=str(new_quantity))
                         total_price = int(product_price.replace("₫", "").replace(".", "").strip()) * new_quantity
                         total_labels[existing_index].configure(text="{:,.0f}₫".format(float(total_price)).replace(",", "."))
                     else:
-                        # If the code doesn't exist, add new labels
+                        # Nếu ID sản phẩm chưa có thì thêm vào list và tạo các Label mới
                         code_label = Label(self.bill_window, text=product_code, font=("Comic Sans MS", 12, BOLD))
                         code_label.grid(row=row, column=0, padx=10, pady=5)
                         code_labels.append(code_label)
@@ -556,7 +512,7 @@ class Mainmenu(Frame):
                         price_label = Label(self.bill_window, text=product_price, font=("Comic Sans MS", 12, BOLD))
                         price_label.grid(row=row, column=3, padx=10, pady=5)
                         price_labels.append(price_label)
-                        # Process the product price and calculate the total
+                        # Định dạng các chuỗi thể hiện giá tiền và tính tổng
                         product_price = product_price.replace("₫", "").replace(".", "").strip()
                         total_price = int(product_price) * 1
                         total_amount += total_price
@@ -564,26 +520,64 @@ class Mainmenu(Frame):
                                             font=("Comic Sans MS", 12, BOLD))
                         total_label.grid(row=row, column=4, padx=10, pady=5)
                         total_labels.append(total_label)
-                        row += 1  # Increment the row variable
-            # Add dashed line separator
+                        row += 1  # Tăng biến thứ tự hàng nếu có thêm sản phẩm
             line_label = Label(self.bill_window, text="-" * 80, font=("Comic Sans MS", 12, BOLD))
             line_label.grid(row=row, column=0, columnspan=5, padx=10, pady=5)
-            # Display the total amount
-            row += 1  # Increment the row variable
+            # Hiển thị tổng số tiền
+            row += 1
             total_label = Label(self.bill_window, text="Total Amount: {:,.0f}₫".format(self.tong()).replace(".0", "").replace(",", "."),
                                 font=("Comic Sans MS", 12, BOLD))
             total_label.grid(row=row, column=0, columnspan=2, padx=10, pady=10)
-            # Add Confirm button
+
             confirm_button = Button(self.bill_window, text="Confirm", font=("Comic Sans MS", 12, BOLD), relief=SOLID,
                                     activeforeground="white", activebackground="green",
                                     command=lambda: self.confirm_order(*[en_try.get() for en_try in self.entries]))
             confirm_button.grid(row=row, column=4, sticky=E, padx=80, pady=5)
-            # Add Cancel button
+
             cancel_button = Button(self.bill_window, text="Cancel", font=("Comic Sans MS", 12, BOLD), relief=SOLID,
                                    activeforeground="white", activebackground="red", command=self.bill_window.destroy)
             cancel_button.grid(row=row, column=4, sticky=E, padx=5, pady=5)
         else:
             messagebox.showinfo("Cart", "There are no products in the cart!")
+
+    def confirm_order(self, name, phone, email, address):
+        self.delivery_window.destroy()
+        self.bill_window.destroy()
+        self.show_bill(name, phone, email, address)
+
+    def show_bill(self, name, phone, email, address):
+        product_counts = Counter(product[0] for product in self.cart_list)
+        receipt = f"{'-' * 50}\n{'PAYMENT RECEIPT':^50}\n{'Time: '}{datetime.now():%d-%m-%Y %H:%M:%S}\n{'-' * 50}"
+
+        total_amount = 0  # Khởi tạo biến tổng số tiền
+        unique_product_ids = set(product[0] for product in self.cart_list)  # Lấy ID sản phẩm
+
+        receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}\n{'-' * 30:^50}\n{'YOUR ORDER':^50}"
+
+        row = 0
+        for product_id in unique_product_ids:
+            product_details = next((p for p in self.products if p[0] == product_id), None)
+            if product_details:
+                product_code = product_details[0]
+                product_name = product_details[2] + " " + product_details[3]
+                product_price = product_details[4]
+                quantity = product_counts[product_id]
+                total_price = float(product_price.replace("₫", "").replace(".", "")) * quantity
+                total_amount += total_price  # Cập nhật tổng số tiền
+                receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
+                row += 1
+
+        receipt += "\nTotal: {:,.0f}₫".format(float(total_amount)).replace(",", ".")
+        messagebox.showinfo("Order Confirmed!", receipt)
+        self.cart_list.clear()
+
+        # Ghi lại danh sách đã được cập nhật vào file CSV
+        with open("Products.csv", "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerows(self.products)
+
+        self.bill_window.destroy()
+        self.show_cart()
 
 
 class Admin:
@@ -831,11 +825,9 @@ class Admin:
         self.add_product_screen.geometry("400x300")
         self.add_product_screen.resizable(width=False, height=False)
 
-        # Create a frame to hold the labels and entry fields
         frame = Frame(self.add_product_screen, bd=2, relief="solid")
         frame.pack(padx=10, pady=5)
 
-        # Create labels and entry fields for entering delivery information
         labels = ["Category:", "Brand:", "Name:", "Price:", "Image:", "Quantity:"]
         self.entries = []
 
@@ -853,13 +845,12 @@ class Admin:
             entry.grid(row=i, column=1, padx=5, pady=5)
             self.entries.append(entry)
 
-        # Create the "Save" button
         save_button = Button(self.add_product_screen, bd=1, text="Save", bg="green", fg="white", activebackground="green",
                              activeforeground="white", font=("Comic Sans MS", 12, "bold"), command=self.save_product)
         save_button.pack(pady=5, padx=30)
 
     def save_product(self):
-        # Get the entered values from the entry fields
+        # Lấy giá trị đã nhập vào
         product_category = self.entries[0].get().strip()
         manufacturer = self.entries[1].get().strip()
         product_name = self.entries[2].get().strip()
@@ -877,9 +868,8 @@ class Admin:
             product_code = product_category[:1] + "{:02d}".format(max_code + 1)  # Định dạng số thành chuỗi nếu max_code = 3 thì product_code = 04
         else:
             product_code = product_category[:1] + "01"
-        # Create the product data as a list
         product_data = [product_code, product_category, manufacturer, product_name, price, image, quantity]
-        # Write the product data to the CSV file
+        # Thêm product_data vào file dữ liệu sản phẩm
         with open("Products.csv", "a", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerow(product_data)
