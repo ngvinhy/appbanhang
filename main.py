@@ -779,7 +779,8 @@ class Admin:
             Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
         self.change(product_info)
 
-    def change(self, product_info):
+    @staticmethod
+    def change(product_info):
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
             reader = csv.reader(file)
