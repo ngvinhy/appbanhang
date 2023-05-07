@@ -5,32 +5,31 @@ import PIL
 from xulyanh import *
 from tkinter import *
 import os
-import tkinter as tk
 from tkinter import messagebox, ttk
 from collections import Counter
 
 
 class MainAccountScreen:
     def __init__(self):
-        self.root = tk.Tk()
+        self.root = Tk()
         self.root.geometry("850x690")
         self.root.title("TECH HUB SHOP")
         self.root.resizable(width=False, height=False)
 
-        tk.Label(text="Select Your Choice", fg="white", bg="#252d35", width="300", height="1", font=("Comic Sans MS", 13, "bold")).pack()
+        Label(text="Select Your Choice", fg="white", bg="#252d35", width="300", height="1", font=("Comic Sans MS", 13, "bold")).pack()
 
-        login_frame = tk.LabelFrame(self.root, bd=2, relief="groove")
+        login_frame = LabelFrame(self.root, bd=2, relief="groove")
         login_frame.pack()
 
         image_cover = xuly_image("https://ik.imagekit.io/nhom2/Cover.png?updatedAt=1682768752412", 850, 650)
-        img1 = tk.Label(login_frame, image=image_cover)
-        img1.pack(side="top", fill=tk.BOTH)
+        img1 = Label(login_frame, image=image_cover)
+        img1.pack(side="top", fill=BOTH)
 
-        tk.Button(login_frame, text="Login", height="2", width="15", command=self.login, font=("Comic Sans MS", 10, "bold")).place(x=360, y=265)
+        Button(login_frame, text="Login", height="2", width="15", command=self.login, font=("Comic Sans MS", 10, "bold")).place(x=360, y=265)
 
-        tk.Button(login_frame, text="Register", height="2", width="15", command=self.register, font=("Comic Sans MS", 10, "bold")).place(x=360, y=320)
+        Button(login_frame, text="Register", height="2", width="15", command=self.register, font=("Comic Sans MS", 10, "bold")).place(x=360, y=320)
 
-        tk.Button(login_frame, text="Admin", height="1", width="7", command=self.admin_login, font=("Comic Sans MS", 10, "bold")).place(x=775, y=10)
+        Button(login_frame, text="Admin", height="1", width="7", command=self.admin_login, font=("Comic Sans MS", 10, "bold")).place(x=775, y=10)
 
         self.root.mainloop()
 
@@ -850,33 +849,36 @@ class Admin:
         save_button.pack(pady=5, padx=30)
 
     def save_product(self):
-        # Lấy giá trị đã nhập vào
-        product_category = self.entries[0].get().strip()
-        manufacturer = self.entries[1].get().strip()
-        product_name = self.entries[2].get().strip()
-        price = "{:,.0f}₫".format(float(self.entries[3].get().strip())).replace(",", ".")
-        image = self.entries[4].get().strip()
-        quantity = self.entries[5].get().strip()
-
-        products = []
-        for product in self.products:
-            if product_category == product[1]:
-                products.append(product)
-        product_id = [pr[0] for pr in products]
-        if product_id:
-            max_code = max([int(p[1:]) for p in product_id if p[1:].isdigit()])
-            product_code = product_category[:1] + "{:02d}".format(max_code + 1)  # Định dạng số thành chuỗi nếu max_code = 3 thì product_code = 04
+        if self.entries[0].get() or self.entries[1].get() or self.entries[2].get() or self.entries[3].get() or self.entries[4].get() or self.entries[5].get() == "":
+            messagebox.showerror("Products", "Any information is not empty!")
         else:
-            product_code = product_category[:1] + "01"
-        product_data = [product_code, product_category, manufacturer, product_name, price, image, quantity]
-        # Thêm product_data vào file dữ liệu sản phẩm
-        with open("Products.csv", "a", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            writer.writerow(product_data)
-        self.add_product_screen.destroy()
-        messagebox.showinfo("Success", "Product added successfully!")
-        self.root.destroy()
-        Admin()
+            # Lấy giá trị đã nhập vào
+            product_category = self.entries[0].get().strip()
+            manufacturer = self.entries[1].get().strip()
+            product_name = self.entries[2].get().strip()
+            price = "{:,.0f}₫".format(float(self.entries[3].get().strip())).replace(",", ".")
+            image = self.entries[4].get().strip()
+            quantity = self.entries[5].get().strip()
+
+            products = []
+            for product in self.products:
+                if product_category == product[1]:
+                    products.append(product)
+            product_id = [pr[0] for pr in products]
+            if product_id:
+                max_code = max([int(p[1:]) for p in product_id if p[1:].isdigit()])
+                product_code = product_category[:1] + "{:02d}".format(max_code + 1)  # Định dạng số thành chuỗi nếu max_code = 3 thì product_code = 04
+            else:
+                product_code = product_category[:1] + "01"
+            product_data = [product_code, product_category, manufacturer, product_name, price, image, quantity]
+            # Thêm product_data vào file dữ liệu sản phẩm
+            with open("Products.csv", "a", newline="", encoding="utf-8") as file:
+                writer = csv.writer(file)
+                writer.writerow(product_data)
+            self.add_product_screen.destroy()
+            messagebox.showinfo("Success", "Product added successfully!")
+            self.root.destroy()
+            Admin()
 
     def remove_product(self, product):
         self.remove_product_screen = Toplevel(self.root)
