@@ -745,22 +745,7 @@ class Admin:
             self.change_price_screen.destroy()
             self.change_price(product_info)
             Label(self.change_price_screen, text="Invalid Price", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
-
-        # Đọc toàn bộ nội dung của file CSV vào một danh sách
-        with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
-            reader = csv.reader(file)
-            data = list(reader)
-
-        # Tìm vị trí của sản phẩm cần thay đổi trong danh sách và thay đổi giá trị của nó
-        for i, row in enumerate(data):
-            if row[0] == product_info[0]:
-                data[i] = product_info
-                break
-
-        # Ghi lại danh sách đã được cập nhật vào file CSV
-        with open("Products.csv", "w", newline="", encoding="UTF-8") as file:
-            writer = csv.writer(file)
-            writer.writerows(data)
+        self.change(product_info)
 
     def change_quantity(self, product_info):
         self.change_quantity_screen = Toplevel(self.change_info_screen)
@@ -792,6 +777,9 @@ class Admin:
             self.change_quantity_screen.destroy()
             self.change_quantity(product_info)
             Label(self.change_quantity_screen, text="Invalid Quantity", font=("Comic Sans MS", 12, BOLD), fg="red").pack(pady=5)
+        self.change(product_info)
+
+    def change(self, product_info):
         # Đọc toàn bộ nội dung của file CSV vào một danh sách
         with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
             reader = csv.reader(file)
