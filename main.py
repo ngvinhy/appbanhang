@@ -9,6 +9,13 @@ from tkinter import messagebox, ttk
 from collections import Counter
 
 
+def get_data():
+    with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
+        reader = csv.reader(file)
+        data = [row for row in reader]
+    return data
+
+
 class MainAccountScreen:
     def __init__(self):
         self.root = Tk()
@@ -156,23 +163,6 @@ class MainAccountScreen:
         Label(self.admin_login_screen, text="User Not Found!", fg="red").pack(pady=5)
 
 
-class Product:
-    def __init__(self, code, name, price, image, description, type):
-        self.name = name
-        self.price = price
-        self.image = image
-        self.description = description
-        self.type = type
-        self.code = code
-
-    @classmethod
-    def get_data(cls):
-        with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
-            reader = csv.reader(file)
-            data = [row for row in reader]
-        return data
-
-
 class Mainmenu(Frame):
     def __init__(self, master):
         super().__init__(master)
@@ -188,7 +178,7 @@ class Mainmenu(Frame):
         self.master.geometry("1180x740")
         self.master.title("TECH HUB SHOP")
         self.master.resizable(width=False, height=False)
-        self.products = Product.get_data()
+        self.products = get_data()
         self.cart_list = []
         self.create_widgets()
         self.quantity_entries = []
@@ -594,7 +584,7 @@ class Admin:
         self.root.geometry("1180x740")
         self.root.title("Products Management")
         self.root.resizable(width=False, height=False)
-        self.products = Product.get_data()
+        self.products = get_data()
         self.create_widgets()
 
         self.root.mainloop()
