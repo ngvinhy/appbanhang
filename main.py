@@ -167,7 +167,6 @@ class Mainmenu(Frame):
         self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo.png?updatedAt=1682769745947", 100, 40)
         self.image_products = []
         self.lf_list = []
-        self.pack()
         self.master.geometry("1180x740")
         self.master.title("TECH HUB SHOP")
         self.master.resizable(width=False, height=False)
@@ -362,18 +361,17 @@ class Mainmenu(Frame):
                   bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
             code = item[0]  # Mã code của sản phẩm
             quantity = product_count[code] if code in product_count else 1
-            quantity_label = Label(lf, text="Quantity: {}".format(quantity), font=("Comic Sans MS", 12, "bold"),
+            quantity_label = Label(lf, text="Quantity: {:02d}".format(quantity), font=("Comic Sans MS", 12, "bold"),
                                    fg="white", bg="#252d35")
             quantity_label.grid(row=4, column=0, padx=85, pady=5)
             self.quantity_labels[lf] = quantity_label  # Thêm nhãn số lượng vào từ điển với key là label frame
 
-            quantity_entry = ttk.Combobox(lf, values=list(range(1, int(quantity) + 1)), state="readonly",
-                                          font=("Comic Sans MS", 12, BOLD))
-            quantity_entry.configure(width=2, height=5)
-            quantity_entry.grid(row=5, column=0, padx=(85, 5), pady=5, sticky="w")
-            self.quantity_entries.append(quantity_entry)
+            quantity_entry_remove = ttk.Combobox(lf, values=list(range(1, int(quantity) + 1)), state="readonly", font=("Comic Sans MS", 12, BOLD))
+            quantity_entry_remove.configure(width=2, height=5)
+            quantity_entry_remove.grid(row=5, column=0, padx=(85, 5), pady=5, sticky="w")
+            self.quantity_entries.append(quantity_entry_remove)
 
-            Button(lf, command=lambda p=item, q=quantity_entry, cart_item=lf: self.remove_item(p, q, cart_item),
+            Button(lf, command=lambda p=item, q=quantity_entry_remove, cart_item=lf: self.remove_item(p, q, cart_item),
                    text="Remove", font=("Comic Sans MS", 12, "bold"), fg="white", bg="red", activeforeground="white",
                    activebackground="red").grid(row=5, column=0, padx=85, pady=5)
             count += 1  # Tăng biến đếm
@@ -392,15 +390,14 @@ class Mainmenu(Frame):
         payment_button.pack(side=RIGHT, padx=10, pady=5)
 
     def remove_item(self, item, quantity_entry, cart_item):
-        quantity = quantity_entry.get()  # Lấy giá trị của quantity_entry
-        if quantity.strip() == "":
-            quantity = 1  # Mặc định xóa 1 sản phẩm nếu dữ liệu nhập vào là rỗng
+        quantity_remove = quantity_entry.get()  # Lấy giá trị của quantity_entry
+        if quantity_remove.strip() == "":
+            quantity_remove = 1  # Mặc định xóa 1 sản phẩm nếu dữ liệu nhập vào là rỗng
         else:
-            quantity = int(quantity)
-        for i in range(quantity):
+            quantity_remove = int(quantity_remove)
+        for i in range(quantity_remove):
             self.cart_list.remove(item)
-        for product in self.products:
-            product[6] = str("{:02d}".format(int(item[6]) + int(quantity)))
+        item[6] = str("{:02d}".format(int(item[6]) + quantity_remove))
         messagebox.showinfo("Success", "Products remove from cart successfully!")
         cart_item.destroy()
         self.show_cart()  # Load lại giao diện cart
