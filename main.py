@@ -9,13 +9,6 @@ from tkinter import messagebox, ttk
 from collections import Counter
 
 
-def get_data():
-    with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
-        reader = csv.reader(file)
-        data = [row for row in reader]
-    return data
-
-
 class MainAccountScreen:
     def __init__(self):
         self.root = Tk()
@@ -891,6 +884,13 @@ class Admin:
         messagebox.showinfo("Success", "Product removed successfully!")
         self.root.destroy()
         Admin()
+
+
+def get_data():
+    with open("Products.csv", "r", newline="", encoding="UTF-8") as file:
+        reader = csv.reader(file)
+        data = [row for row in reader]
+    return data
 
 
 def main():
