@@ -820,7 +820,7 @@ class Admin:
 
     def add_product(self):
         self.add_product_screen = Toplevel(self.root)
-        self.add_product_screen.title("Delivery Information")
+        self.add_product_screen.title("Product Information")
         self.add_product_screen.geometry("400x300")
         self.add_product_screen.resizable(width=False, height=False)
 
@@ -850,7 +850,7 @@ class Admin:
 
     def save_product(self):
         if self.entries[0].get() or self.entries[1].get() or self.entries[2].get() or self.entries[3].get() or self.entries[4].get() or self.entries[5].get() == "":
-            messagebox.showerror("Products", "Any information is not empty!")
+            messagebox.showerror("Product", "Any information is not empty!")
         else:
             # Lấy giá trị đã nhập vào
             product_category = self.entries[0].get().strip()
