@@ -552,7 +552,7 @@ class Mainmenu(Frame):
         total_amount = 0  # Khởi tạo biến tổng số tiền
         unique_product_ids = set(product[0] for product in self.cart_list)  # Lấy ID sản phẩm
 
-        receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}\n{'-' * 30:^55}\n{'YOUR ORDER':^50}"
+        receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}\n{'-' * 30:^50}\n{'YOUR ORDER':^50}"
 
         row = 0
         for product_id in unique_product_ids:
