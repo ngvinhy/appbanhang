@@ -818,7 +818,7 @@ class Admin:
         save_button.pack(pady=5, padx=30)
 
     def save_product(self):
-        if self.entries[0].get() or self.entries[1].get() or self.entries[2].get() or self.entries[3].get() or self.entries[4].get() or self.entries[5].get() == "":
+        if self.entries[0].get() == "" or self.entries[1].get() == "" or self.entries[2].get() == "" or self.entries[3].get() == "" or self.entries[4].get() == "" or self.entries[5].get() == "":
             messagebox.showerror("Product", "Any information is not empty!")
         else:
             # Lấy giá trị đã nhập vào
@@ -826,7 +826,7 @@ class Admin:
             manufacturer = self.entries[1].get().strip()
             product_name = self.entries[2].get().strip()
             price = "{:,.0f}₫".format(float(self.entries[3].get().strip())).replace(",", ".")
-            image = self.entries[4].get().strip()
+            image = "https://ik.imagekit.io/" + self.entries[4].get().strip()
             quantity = self.entries[5].get().strip()
 
             products = []
