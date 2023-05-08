@@ -815,6 +815,12 @@ class Admin:
     def save_product(self):
         if self.entries[0].get() == "" or self.entries[1].get() == "" or self.entries[2].get() == "" or self.entries[3].get() == "" or self.entries[4].get() == "" or self.entries[5].get() == "":
             messagebox.showerror("Product", "Any information is not empty!")
+        elif not self.entries[3].get().isdigit():
+            messagebox.showerror("Invalid Price", "Price must be numeric!")
+            self.entries[3].delete(0, END)
+        elif not self.entries[5].get().isdigit():
+            messagebox.showerror("Invalid Quantity", "Quantity must be numeric!")
+            self.entries[5].delete(0, END)
         else:
             # Lấy giá trị đã nhập vào
             product_category = self.entries[0].get().strip()
