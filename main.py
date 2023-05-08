@@ -330,51 +330,46 @@ class Mainmenu(Frame):
         self.quantity_labels = {}  # Tạo từ điển chứa nhãn số lượng sản phẩm
         count = 0  # Khởi tạo biến đếm để định vị vị trí
 
-        product_count = {}  # Tạo từ điển đếm số lượng sản phẩm cho từng mã code
-        for item in self.cart_list:
-            code = item[0]  # Mã code của sản phẩm
-            product_count[code] = product_count.get(code, 0) + 1
-        added_codes = []  # Danh sách mã code đã được xét
-        for item in self.cart_list:
-            code = item[0]  # Mã code của sản phẩm
-            if code in added_codes:
-                continue  # Bỏ qua nếu mã code đã được xét trước đó
+        product_counts = Counter(product[0] for product in self.cart_list)
+        unique_product_ids = set(product[0] for product in self.cart_list)
+        for product_id in unique_product_ids:
+            product_details = next((p for p in self.products if p[0] == product_id), None)
+            if product_details:
+                lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35",
+                                text=product_details[3], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
+                lf.grid(row=count // 3, column=count % 3, padx=10, pady=5)
+                self.lf_list.append(lf)  # Thêm label frame vào list
 
-            lf = LabelFrame(frame, bd=2, relief="solid", fg="white", bg="#252d35",
-                            text=item[3], font=("Comic Sans MS", 12, BOLD), labelanchor=N)
-            lf.grid(row=len(added_codes) // 3, column=len(added_codes) % 3, padx=10, pady=5)
-            self.lf_list.append(lf)  # Thêm label frame vào list
-            added_codes.append(code)  # Thêm mã code vào danh sách đã xét
+                product_brand = product_details[2]
+                product_image = product_details[5]
+                product_price = product_details[4]
+                try:
+                    self.image_products.append(xuly_image(product_image, 120, 100))
+                except PIL.UnidentifiedImageError:
+                    self.image_products.append(xuly_image("https://ik.imagekit.io/nhom2/404.png?updatedAt=1683199218403", 120, 100))
+                label_image = Label(lf, image=self.image_products[count])
+                label_image.grid(row=2, column=0, padx=85, pady=5)
+                Label(lf, text="Brand: " + product_brand, font=("Comic Sans MS", 12, "bold"), fg="white",
+                      bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
+                Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white",
+                      bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
+                quantity = product_counts[product_id]
+                quantity_label = Label(lf, text="Quantity: {:02d}".format(quantity), font=("Comic Sans MS", 12, "bold"),
+                                       fg="white", bg="#252d35")
+                quantity_label.grid(row=4, column=0, padx=85, pady=5)
+                self.quantity_labels[lf] = quantity_label  # Thêm nhãn số lượng vào từ điển với key là label frame
 
-            product_brand = item[2]
-            product_image = item[5]
-            product_price = item[4]
-            try:
-                self.image_products.append(xuly_image(product_image, 120, 100))
-            except PIL.UnidentifiedImageError:
-                self.image_products.append(xuly_image("https://ik.imagekit.io/nhom2/404.png?updatedAt=1683199218403", 120, 100))
-            label_image = Label(lf, image=self.image_products[count])
-            label_image.grid(row=2, column=0, padx=85, pady=5)
-            Label(lf, text="Brand: " + product_brand, font=("Comic Sans MS", 12, "bold"), fg="white",
-                  bg="#252d35").grid(row=1, column=0, padx=85, pady=5)
-            Label(lf, text=product_price, font=("Comic Sans MS", 12, "bold"), fg="white",
-                  bg="#252d35").grid(row=3, column=0, padx=85, pady=5)
-            code = item[0]  # Mã code của sản phẩm
-            quantity = product_count[code] if code in product_count else 1
-            quantity_label = Label(lf, text="Quantity: {:02d}".format(quantity), font=("Comic Sans MS", 12, "bold"),
-                                   fg="white", bg="#252d35")
-            quantity_label.grid(row=4, column=0, padx=85, pady=5)
-            self.quantity_labels[lf] = quantity_label  # Thêm nhãn số lượng vào từ điển với key là label frame
+                quantity_entry_remove = ttk.Combobox(lf, values=list(range(1, int(quantity) + 1)), state="readonly",
+                                                     font=("Comic Sans MS", 12, BOLD))
+                quantity_entry_remove.configure(width=2, height=5)
+                quantity_entry_remove.grid(row=5, column=0, padx=(85, 5), pady=5, sticky="w")
+                self.quantity_entries.append(quantity_entry_remove)
 
-            quantity_entry_remove = ttk.Combobox(lf, values=list(range(1, int(quantity) + 1)), state="readonly", font=("Comic Sans MS", 12, BOLD))
-            quantity_entry_remove.configure(width=2, height=5)
-            quantity_entry_remove.grid(row=5, column=0, padx=(85, 5), pady=5, sticky="w")
-            self.quantity_entries.append(quantity_entry_remove)
+                Button(lf, command=lambda p=product_details, q=quantity_entry_remove, cart_item=lf: self.remove_item(p, q, cart_item),
+                       text="Remove", font=("Comic Sans MS", 12, "bold"), fg="white", bg="red", activeforeground="white",
+                       activebackground="red").grid(row=5, column=0, padx=85, pady=5)
+                count += 1  # Tăng biến đếm
 
-            Button(lf, command=lambda p=item, q=quantity_entry_remove, cart_item=lf: self.remove_item(p, q, cart_item),
-                   text="Remove", font=("Comic Sans MS", 12, "bold"), fg="white", bg="red", activeforeground="white",
-                   activebackground="red").grid(row=5, column=0, padx=85, pady=5)
-            count += 1  # Tăng biến đếm
         # Cập nhật thanh cuộn khi có thay đổi
         canvas.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
