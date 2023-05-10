@@ -93,7 +93,7 @@ class MainAccountScreen:
                 self.login_screen.destroy()
                 messagebox.showinfo("Account", "Login Success!")
                 self.root.destroy()
-                main()
+                Mainmenu()
             else:
                 self.password_not_recognised()
         else:
@@ -156,24 +156,25 @@ class MainAccountScreen:
         Label(self.admin_login_screen, text="User Not Found!", fg="red").pack(pady=5)
 
 
-class Mainmenu(Frame):
-    def __init__(self, master):
-        super().__init__(master)
-        self.products_frame = LabelFrame(self.master, bd=3, relief="raised", text="PRODUCTS",
+class Mainmenu:
+    def __init__(self):
+        self.root = Tk()
+        self.products_frame = LabelFrame(self.root, bd=3, relief="raised", text="PRODUCTS",
                                          font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
-        self.button_frame = LabelFrame(self.master, bd=3, relief="raised", text="CATEGORY",
+        self.button_frame = LabelFrame(self.root, bd=3, relief="raised", text="CATEGORY",
                                        font=("Comic Sans MS", 16, BOLD), fg="white", bg="#252d35", labelanchor=N)
-        self.heading = LabelFrame(self.master, bd=3, relief="raised", bg="#080a0d")
+        self.heading = LabelFrame(self.root, bd=3, relief="raised", bg="#080a0d")
         self.image_logo = xuly_image("https://ik.imagekit.io/nhom2/Logo.png?updatedAt=1682769745947", 100, 40)
         self.image_products = []
         self.lf_list = []
-        self.master.geometry("1180x740")
-        self.master.title("TECH HUB SHOP")
-        self.master.resizable(width=False, height=False)
+        self.root.geometry("1180x740")
+        self.root.title("TECH HUB SHOP")
+        self.root.resizable(width=False, height=False)
         self.products = get_data()
         self.cart_list = []
         self.create_widgets()
         self.quantity_entries = []
+        self.root.mainloop()
 
     def create_widgets(self):
         self.heading.place(x=0, y=0, width=1180, height=60)
@@ -401,7 +402,7 @@ class Mainmenu(Frame):
         return sum([float(product[4].replace("₫", "").replace(".", "")) for product in self.cart_list])
 
     def show_delivery_info_window(self):
-        self.delivery_window = Toplevel(self)
+        self.delivery_window = Toplevel(self.root)
         self.delivery_window.title("Delivery Information")
         self.delivery_window.geometry("300x210")
         self.delivery_window.resizable(width=False, height=False)
@@ -425,7 +426,7 @@ class Mainmenu(Frame):
 
     def show_order(self):
         if len(self.cart_list) != 0:
-            self.bill_window = Toplevel(self.master)
+            self.bill_window = Toplevel(self.root)
             self.bill_window.title("Order")
 
             receipt_label = Label(self.bill_window, text="Order Confirmation", font=("Comic Sans MS", 15, BOLD))
@@ -891,10 +892,10 @@ def get_data():
     return data
 
 
-def main():
-    root = Tk()
-    app = Mainmenu(master=root)
-    app.mainloop()
+# def main():
+#     root = Tk()
+#     app = Mainmenu(root=root)
+#     self.root.mainloop()
 
 
 if __name__ == "__main__":
