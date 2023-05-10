@@ -174,6 +174,7 @@ class Mainmenu:
         self.cart_list = []
         self.create_widgets()
         self.quantity_entries = []
+
         self.root.mainloop()
 
     def create_widgets(self):
@@ -890,12 +891,6 @@ def get_data():
         reader = csv.reader(file)
         data = [row for row in reader]
     return data
-
-
-# def main():
-#     root = Tk()
-#     app = Mainmenu(root=root)
-#     self.root.mainloop()
 
 
 if __name__ == "__main__":
