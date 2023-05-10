@@ -448,7 +448,6 @@ class Mainmenu:
                 header_label = Label(self.bill_window, text=header, font=("Comic Sans MS", 12, BOLD))
                 header_label.grid(row=4, column=col, padx=10, pady=5)
             row = 5  # Khởi tạo biến chỉ thứ tự hàng
-            total_amount = 0  # Khởi tạo biến tổng tiền
             code_labels = []
             name_labels = []
             quantity_labels = []
@@ -491,7 +490,7 @@ class Mainmenu:
                         # Định dạng các chuỗi thể hiện giá tiền và tính tổng
                         product_price = product_price.replace("₫", "").replace(".", "").strip()
                         total_price = int(product_price) * 1
-                        total_amount += total_price
+
                         total_label = Label(self.bill_window, text="{:,}₫".format(total_price).replace(",", "."),
                                             font=("Comic Sans MS", 12, BOLD))
                         total_label.grid(row=row, column=4, padx=10, pady=5)
@@ -530,7 +529,6 @@ class Mainmenu:
 
         receipt += f"\nCustomer Name: {name}\nPhone Number: {phone}\nEmail: {email}\nAddress: {address}\n{'-' * 30:^50}\n{'YOUR ORDER':^50}"
 
-        row = 0
         for product_id in unique_product_ids:
             product_details = next((p for p in self.products if p[0] == product_id), None)
             if product_details:
@@ -541,7 +539,6 @@ class Mainmenu:
                 total_price = float(product_price.replace("₫", "").replace(".", "")) * quantity
                 total_amount += total_price  # Cập nhật tổng số tiền
                 receipt += f"\nCode: {product_code}\nProduct: {product_name}\nQuantity: {quantity}\nPrice: {product_price}\n{'-' * 20}"
-                row += 1
 
         receipt += "\nTotal: {:,.0f}₫".format(float(total_amount)).replace(",", ".")
         messagebox.showinfo("Order Confirmed!", receipt)
@@ -552,7 +549,6 @@ class Mainmenu:
             writer = csv.writer(file)
             writer.writerows(self.products)
 
-        self.bill_window.destroy()
         self.show_cart()
 
 
@@ -830,7 +826,7 @@ class Admin:
             product_name = self.entries[2].get().strip()
             price = "{:,.0f}₫".format(float(self.entries[3].get().strip())).replace(",", ".")
             image = "https://ik.imagekit.io/" + self.entries[4].get().strip()
-            quantity = self.entries[5].get().strip()
+            quantity = "{:02d}".format(int(self.entries[5].get().strip()))
 
             products = []
             for product in self.products:
