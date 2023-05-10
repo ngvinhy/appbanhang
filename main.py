@@ -813,7 +813,7 @@ class Admin:
         save_button.pack(pady=5, padx=30)
 
     def save_product(self):
-        if self.entries[0].get() == "" or self.entries[1].get() == "" or self.entries[2].get() == "" or self.entries[3].get() == "" or self.entries[4].get() == "" or self.entries[5].get() == "":
+        if any(entry.get() == "" for entry in self.entries):
             messagebox.showerror("Product", "Any information is not empty!")
         elif not self.entries[3].get().isdigit():
             messagebox.showerror("Invalid Price", "Price must be numeric!")
